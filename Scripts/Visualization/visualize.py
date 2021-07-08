@@ -188,7 +188,11 @@ if __name__ == "__main__":
 
     animation = Animation(map, schedule)
 
+    #animation.save('TP_k=5.mp4', 1)
+
     if args.video:
         animation.save(args.video, args.speed)
     else:
         animation.show()
+
+

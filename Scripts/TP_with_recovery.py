@@ -4,7 +4,7 @@ from Scripts.CBS.cbs import CBS, Environment
 
 
 class TokenPassingRecovery(object):
-    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation):
+    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, k=1):
         self.agents = agents
         self.dimensions = dimesions
         self.obstacles = obstacles
@@ -15,6 +15,10 @@ class TokenPassingRecovery(object):
         # TODO: Check all properties for well-formedness
         self.token = {}
         self.simulation = simulation
+        self.k = k
+        if k < 1:
+            print('k should be >= 1!')
+            exit(0)
         self.init_token()
 
     def init_token(self):
@@ -55,10 +59,11 @@ class TokenPassingRecovery(object):
         for path in agents_paths:
             if len(path) > time_start and len(path) > 1:
                 for i in range(time_start, len(path)):
-                    if i - 1 >= 0:
-                        obstacles.append((path[i][0], path[i][1], i - 1))
                     obstacles.append((path[i][0], path[i][1], i))
-                    obstacles.append((path[i][0], path[i][1], i + 1))
+                    for j in range(1, self.k + 1):
+                        if i - j >= time_start:
+                            obstacles.append((path[i][0], path[i][1], i - j))
+                        obstacles.append((path[i][0], path[i][1], i + j))
                     # Mark last element with negative time to later turn it into idle obstacle
                     if i == len(path) - 1:
                         obstacles.append((path[i][0], path[i][1], -i))
@@ -162,6 +167,9 @@ class TokenPassingRecovery(object):
         idle_agents = self.get_idle_agents()
         while len(idle_agents) > 0:
             agent_name = random.choice(list(idle_agents.keys()))
+            all_idle_agents = self.get_idle_agents()
+            all_idle_agents.pop(agent_name)
+            #agent_name = list(idle_agents.keys())[0]
             agent_pos = idle_agents.pop(agent_name)[0]
             available_tasks = {}
             for task_name, task in self.token['tasks'].items():
@@ -178,25 +186,31 @@ class TokenPassingRecovery(object):
                     closest_task_name = self.get_closest_task_name(available_tasks, agent_pos)
                     closest_task = available_tasks[closest_task_name]
                 moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
-                idle_obstacles_agents = self.get_idle_obstacles_agents(idle_agents, 0)
+                idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), 0)
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_task[0]}
                 env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
                 cbs = CBS(env)
                 path_to_task_start = cbs.search()
                 if not path_to_task_start:
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
+                    if len(self.token['delayed_agents']) == 0:
+                        print('Instance is not well-formed')
+                        exit(0)
                 else:
                     print("Solution found to task start for agent", agent_name, " searching solution to task goal...")
                     cost1 = env.compute_solution_cost(path_to_task_start)
                     # Use cost - 1 because idle cost is 1
                     moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), cost1-1)
-                    idle_obstacles_agents = self.get_idle_obstacles_agents(idle_agents, cost1)
+                    idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), cost1-1)
                     agent = {'name': agent_name, 'start': closest_task[0], 'goal': closest_task[1]}
                     env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
                     cbs = CBS(env)
                     path_to_task_goal = cbs.search()
                     if not path_to_task_goal:
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
+                        if len(self.token['delayed_agents']) == 0:
+                            print('Instance is not well-formed')
+                            exit(0)
                     else:
                         print("Solution found to task goal for agent", agent_name, " doing task...")
                         cost2 = env.compute_solution_cost(path_to_task_goal)
@@ -223,7 +237,7 @@ class TokenPassingRecovery(object):
             else:
                 closest_non_task_endpoint = self.get_closest_non_task_endpoint(agent_pos)
                 moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
-                idle_obstacles_agents = self.get_idle_obstacles_agents(idle_agents, 0)
+                idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), 0)
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_non_task_endpoint}
                 env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
                 cbs = CBS(env)
@@ -232,7 +246,7 @@ class TokenPassingRecovery(object):
                     print("Solution to non-task endpoint not found for agent", agent_name, " instance is not well-formed.")
                     exit(0)
                 else:
-                    print('No available tasks for agent', agent_name, ' moving to safe idling position...')
+                    print('No available task for agent', agent_name, ' moving to safe idling position...')
                     self.update_ends(agent_pos)
                     self.token['occupied_non_task_endpoints'].add(tuple(closest_non_task_endpoint))
                     self.token['agents_to_tasks'][agent_name] = {'task_name': 'safe_idle', 'start': agent_pos,'goal': closest_non_task_endpoint, 'predicted_cost': 0}
@@ -244,8 +258,6 @@ class TokenPassingRecovery(object):
         for name, path in self.token['agents'].items():
             if len(path) > 1:
                 self.token['agents'][name] = path[1:]
-
-        # TODO togliere da obs fissi agente che sta pianificando
 
 
                         
