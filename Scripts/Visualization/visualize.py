@@ -2,7 +2,7 @@
 import yaml
 import matplotlib
 # matplotlib.use("Agg")
-from matplotlib.patches import Circle, Rectangle, Arrow
+from matplotlib.patches import Circle, Rectangle, Arrow, RegularPolygon
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,7 +32,8 @@ class Animation:
         self.artists = []
         self.agents = dict()
         self.agent_names = dict()
-        # create boundary patch
+        self.tasks = dict()
+        # Create boundary patch
         xmin = -0.5
         ymin = -0.5
         xmax = map["map"]["dimensions"][0] - 0.5
@@ -50,15 +51,29 @@ class Animation:
         self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='red'))
         for o in map["map"]["obstacles"]:
             x, y = o[0], o[1]
-            self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='red'))
+            self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='black'))
+        for e in map["map"]["non_task_endpoints"]:
+            x, y = e[0], e[1]
+            self.patches.append(Circle((x, y), 0.4, facecolor='green', edgecolor='black'))
 
-        # create agents:
+        task_colors = np.random.rand(len(map["tasks"]), 3)
+        for t, i in zip(map["tasks"], range(len(map["tasks"]))):
+            x_s, y_s = t['start'][0], t['start'][1]
+            self.tasks[t['task_name']] = [Rectangle((x_s - 0.25, y_s - 0.25), 0.5, 0.5, facecolor=task_colors[i], edgecolor='black', alpha=0)]
+            self.patches.append(self.tasks[t['task_name']][0])
+        for t, i in zip(map["tasks"], range(len(map["tasks"]))):
+            x_g, y_g = t['goal'][0], t['goal'][1]
+            self.tasks[t['task_name']].append(RegularPolygon((x_g, y_g - 0.05), 3, 0.2, facecolor=task_colors[i], edgecolor='black', alpha=0))
+            self.patches.append(self.tasks[t['task_name']][1])
+
+        # Create agents:
         self.T = 0
-        # draw goals first
+        # Draw goals first
         for d, i in zip(map["agents"], range(0, len(map["agents"]))):
-            self.patches.append(
-                Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor=Colors[0], edgecolor='black',
-                          alpha=0.5))
+            if 'goal' in d:
+                self.patches.append(
+                    Rectangle((d["goal"][0] - 0.25, d["goal"][1] - 0.25), 0.5, 0.5, facecolor=Colors[0], edgecolor='black',
+                              alpha=0.5))
         for d, i in zip(map["agents"], range(0, len(map["agents"]))):
             name = d["name"]
             self.agents[name] = Circle((d["start"][0], d["start"][1]), 0.3, facecolor=Colors[0], edgecolor='black')
@@ -107,11 +122,17 @@ class Animation:
             self.agents[agent_name].center = p
             self.agent_names[agent_name].set_position(p)
 
-        # reset all colors
+        # Reset all colors
         for _, agent in self.agents.items():
             agent.set_facecolor(agent.original_face_color)
 
-        # check drive-drive collisions
+        # Make tasks visible at the right time
+        for t in map["tasks"]:
+            if t['start_time'] <= i / 10 + 1:
+                self.tasks[t['task_name']][0].set_alpha(0.5)
+                self.tasks[t['task_name']][1].set_alpha(0.5)
+
+        # Check drive-drive collisions
         agents_array = [agent for _, agent in self.agents.items()]
         for i in range(0, len(agents_array)):
             for j in range(i + 1, len(agents_array)):
@@ -153,8 +174,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.map is None:
-        args.map = '../CBS/input.yaml'
-        args.schedule = '../CBS/output.yaml'
+        args.map = '../input.yaml'
+        args.schedule = '../output.yaml'
 
     with open(args.map) as map_file:
         map = yaml.load(map_file, Loader=yaml.FullLoader)

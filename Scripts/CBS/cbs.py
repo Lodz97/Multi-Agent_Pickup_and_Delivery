@@ -90,9 +90,10 @@ class Constraints(object):
             "EC: " + str([str(ec) for ec in self.edge_constraints])
 
 class Environment(object):
-    def __init__(self, dimension, agents, obstacles):
+    def __init__(self, dimension, agents, obstacles, moving_obstacles=[]):
         self.dimension = dimension
         self.obstacles = obstacles
+        self.moving_obstacles = moving_obstacles
 
         self.agents = agents
         self.agent_dict = {}
@@ -192,11 +193,19 @@ class Environment(object):
         else:
             return solution[agent_name][-1]
 
+    def get_all_obstacles(self, time):
+        all_obs = []
+        for o in self.moving_obstacles:
+            if o[2] < 0 and time >= -o[2]:
+                all_obs.append((o[0], o[1]))
+        return self.obstacles + all_obs
+
     def state_valid(self, state):
         return state.location.x >= 0 and state.location.x < self.dimension[0] \
             and state.location.y >= 0 and state.location.y < self.dimension[1] \
             and VertexConstraint(state.time, state.location) not in self.constraints.vertex_constraints \
-            and (state.location.x, state.location.y) not in self.obstacles
+            and (state.location.x, state.location.y) not in self.get_all_obstacles(state.time) \
+            and (state.location.x, state.location.y, state.time) not in self.moving_obstacles
 
     def transition_valid(self, state_1, state_2):
         return EdgeConstraint(state_1.time, state_1.location, state_2.location) not in self.constraints.edge_constraints
@@ -254,6 +263,7 @@ class CBS(object):
         self.env = environment
         self.open_set = set()
         self.closed_set = set()
+
     def search(self):
         start = HighLevelNode()
         # TODO: Initialize it in a better way
