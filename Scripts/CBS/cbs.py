@@ -90,10 +90,13 @@ class Constraints(object):
             "EC: " + str([str(ec) for ec in self.edge_constraints])
 
 class Environment(object):
-    def __init__(self, dimension, agents, obstacles, moving_obstacles=[]):
+    def __init__(self, dimension, agents, obstacles, moving_obstacles=None, a_star_max_iter=-1):
+        if moving_obstacles is None:
+            moving_obstacles = []
         self.dimension = dimension
         self.obstacles = obstacles
         self.moving_obstacles = moving_obstacles
+        self.a_star_max_iter = a_star_max_iter
 
         self.agents = agents
         self.agent_dict = {}
@@ -285,7 +288,7 @@ class CBS(object):
             self.env.constraint_dict = P.constraint_dict
             conflict_dict = self.env.get_first_conflict(P.solution)
             if not conflict_dict:
-                print("solution found")
+                print("Low level CBS - Solution found")
 
                 return self.generate_plan(P.solution)
 
@@ -337,13 +340,13 @@ if __name__ == "__main__":
     obstacles = param["map"]["obstacles"]
     agents = param['agents']
 
-    env = Environment(dimension, agents, obstacles)
+    env = Environment(dimension, agents, obstacles, a_star_max_iter=1000)
 
     # Searching
     cbs = CBS(env)
     solution = cbs.search()
     if not solution:
-        print(" Solution not found")
+        print("Solution not found")
         exit(0)
 
     # Write to output file
