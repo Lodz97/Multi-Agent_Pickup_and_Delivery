@@ -49,9 +49,12 @@ class Animation:
         # self.ax.axis('off')
 
         self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='red'))
+        for x in range(map["map"]["dimensions"][0]):
+            for y in range(map["map"]["dimensions"][1]):
+                self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='none', edgecolor='black'))
         for o in map["map"]["obstacles"]:
             x, y = o[0], o[1]
-            self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='black'))
+            self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='black', edgecolor='black'))
         for e in map["map"]["non_task_endpoints"]:
             x, y = e[0], e[1]
             self.patches.append(Circle((x, y), 0.4, facecolor='green', edgecolor='black'))

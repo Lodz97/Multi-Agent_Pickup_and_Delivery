@@ -1,0 +1,25 @@
+agents:
+-   start: [0, 0]
+    name: agent0
+-   start: [2, 0]
+    name: agent1
+map:
+    dimensions: [3, 3]
+    obstacles:
+    - !!python/tuple [0, 1]
+    - !!python/tuple [2, 1]
+    non_task_endpoints:
+    - !!python/tuple [0, 2]
+    - !!python/tuple [2, 2]
+tasks:
+-   start_time: 0
+    start: [0, 0]
+    goal: [2, 0]
+    task_name: task0
+-   start_time: 0
+    start: [2, 0]
+    goal: [0, 0]
+    task_name: task1
+delays:
+    agent0: []
+    agent1: [4, 5, 6]
