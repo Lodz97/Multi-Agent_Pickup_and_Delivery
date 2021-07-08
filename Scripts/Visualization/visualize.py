@@ -10,6 +10,10 @@ from matplotlib import animation
 import matplotlib.animation as manimation
 import argparse
 import math
+import json
+import os
+import RoothPath
+
 
 Colors = ['orange', 'blue', 'green']
 
@@ -181,7 +185,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.map is None:
-        args.map = '../input.yaml'
+        with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
+            config = json.load(json_file)
+        args.map = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name']))
         args.schedule = '../output.yaml'
 
     with open(args.map) as map_file:

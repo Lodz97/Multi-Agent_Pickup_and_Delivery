@@ -1,6 +1,7 @@
 """
 Python implementation of Conflict-based search
 author: Ashwin Bose (@atb033)
+author: Giacomo Lodigiani (@Lodz97)
 """
 import sys
 sys.path.insert(0, '../')

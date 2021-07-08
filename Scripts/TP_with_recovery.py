@@ -1,3 +1,7 @@
+"""
+Python implementation of Token Passing algorithms to solve MAPD problems with delays
+author: Giacomo Lodigiani (@Lodz97)
+"""
 from math import fabs
 import random
 from Scripts.CBS.cbs import CBS, Environment

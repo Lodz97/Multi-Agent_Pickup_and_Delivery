@@ -1,6 +1,7 @@
 """
 AStar search
 author: Ashwin Bose (@atb033)
+author: Giacomo Lodigiani (@Lodz97)
 """
 
 

@@ -1,7 +1,10 @@
 import random
 import argparse
 import yaml
+import json
+import os
 from Scripts.TP_with_recovery import TokenPassingRecovery
+import RoothPath
 
 
 class Simulation(object):
@@ -75,7 +78,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.param is None:
-        args.param = 'input.yaml'
+        with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
+            config = json.load(json_file)
+        args.param = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name']))
         args.output = 'output.yaml'
 
     # Read from input file
