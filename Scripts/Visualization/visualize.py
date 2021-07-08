@@ -98,7 +98,8 @@ class Animation:
                                             init_func=self.init_func,
                                             frames=int(self.T + 1) * 10,
                                             interval=100,
-                                            blit=True)
+                                            blit=True,
+                                            repeat=False)
 
     def save(self, file_name, speed):
         self.anim.save(
@@ -131,9 +132,12 @@ class Animation:
 
         # Make tasks visible at the right time
         for t in map["tasks"]:
-            if t['start_time'] <= i / 10 + 1:
+            if t['start_time'] <= i / 10 + 1 <= self.schedule['completed_tasks_times'][t['task_name']]:
                 self.tasks[t['task_name']][0].set_alpha(0.5)
                 self.tasks[t['task_name']][1].set_alpha(0.5)
+            else:
+                self.tasks[t['task_name']][0].set_alpha(0)
+                self.tasks[t['task_name']][1].set_alpha(0)
 
         # Check drive-drive collisions
         agents_array = [agent for _, agent in self.agents.items()]

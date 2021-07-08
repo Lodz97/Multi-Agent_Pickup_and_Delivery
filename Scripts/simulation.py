@@ -94,13 +94,13 @@ if __name__ == '__main__':
 
     # Simulate
     simulation = Simulation(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, k=5)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, k=1)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 
     cost = 0
     for path in simulation.actual_paths.values():
         cost = cost + len(path)
-    output = {'schedule': simulation.actual_paths, 'cost': cost}
+    output = {'schedule': simulation.actual_paths, 'cost': cost, 'completed_tasks_times': tp.get_completed_tasks_times()}
     with open(args.output, 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)

@@ -24,6 +24,7 @@ class TokenPassingRecovery(object):
     def init_token(self):
         self.token['agents'] = {}
         self.token['tasks'] = {}
+        self.token['completed_tasks_times'] = {}
         for t in self.simulation.get_new_tasks():
             self.token['tasks'][t['task_name']] = [t['start'], t['goal']]
         self.token['agents_to_tasks'] = {}
@@ -113,6 +114,9 @@ class TokenPassingRecovery(object):
     def get_completed_tasks(self):
         return self.token['completed_tasks']
 
+    def get_completed_tasks_times(self):
+        return self.token['completed_tasks_times']
+
     def get_token(self):
         return self.token
 
@@ -123,6 +127,7 @@ class TokenPassingRecovery(object):
             if agent_name in self.token['agents_to_tasks'] and (pos['x'], pos['y']) == tuple(self.token['agents_to_tasks'][agent_name]['goal']) \
             and len(self.token['agents'][agent_name]) == 1 and self.token['agents_to_tasks'][agent_name]['task_name'] != 'safe_idle':
                 self.token['completed_tasks'] = self.token['completed_tasks'] + 1
+                self.token['completed_tasks_times'][self.token['agents_to_tasks'][agent_name]['task_name']] = self.simulation.get_time()
                 self.token['agents_to_tasks'].pop(agent_name)
             if agent_name in self.token['agents_to_tasks'] and (pos['x'], pos['y']) == tuple(self.token['agents_to_tasks'][agent_name]['goal']) \
             and len(self.token['agents'][agent_name]) == 1 and self.token['agents_to_tasks'][agent_name]['task_name'] == 'safe_idle':
@@ -167,9 +172,9 @@ class TokenPassingRecovery(object):
         idle_agents = self.get_idle_agents()
         while len(idle_agents) > 0:
             agent_name = random.choice(list(idle_agents.keys()))
+            # agent_name = list(idle_agents.keys())[0]
             all_idle_agents = self.get_idle_agents()
             all_idle_agents.pop(agent_name)
-            #agent_name = list(idle_agents.keys())[0]
             agent_pos = idle_agents.pop(agent_name)[0]
             available_tasks = {}
             for task_name, task in self.token['tasks'].items():
