@@ -125,7 +125,7 @@ class Animation:
 
     def animate_func(self, i):
         for agent_name, agent in self.combined_schedule.items():
-            pos = self.getState(i / 10, agent)
+            pos = self.getState(i / 5, agent)
             p = (pos[0], pos[1])
             self.agents[agent_name].center = p
             self.agent_names[agent_name].set_position(p)
@@ -136,7 +136,7 @@ class Animation:
 
         # Make tasks visible at the right time
         for t in map["tasks"]:
-            if t['start_time'] <= i / 10 + 1 <= self.schedule['completed_tasks_times'][t['task_name']]:
+            if t['start_time'] <= i / 5 + 1 <= self.schedule['completed_tasks_times'][t['task_name']]:
                 self.tasks[t['task_name']][0].set_alpha(0.5)
                 self.tasks[t['task_name']][1].set_alpha(0.5)
             else:
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
     animation = Animation(map, schedule)
 
-    #animation.save('TP_k=5.mp4', 1)
+    # animation.save('TP_k=5.mp4', 1)
 
     if args.video:
         animation.save(args.video, args.speed)

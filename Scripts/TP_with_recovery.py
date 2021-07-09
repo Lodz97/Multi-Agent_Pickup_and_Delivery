@@ -8,21 +8,22 @@ from Scripts.CBS.cbs import CBS, Environment
 
 
 class TokenPassingRecovery(object):
-    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, k=1):
+    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1):
         self.agents = agents
         self.dimensions = dimesions
         self.obstacles = obstacles
         self.non_task_endpoints = non_task_endpoints
         if len(agents) > len(non_task_endpoints):
             print('There are more agents than non task endpoints, instance is not well-formed.')
-            exit(0)
+            exit(1)
         # TODO: Check all properties for well-formedness
         self.token = {}
         self.simulation = simulation
+        self.a_star_max_iter = a_star_max_iter
         self.k = k
         if k < 1:
             print('k should be >= 1!')
-            exit(0)
+            exit(1)
         self.init_token()
 
     def init_token(self):
@@ -64,14 +65,15 @@ class TokenPassingRecovery(object):
         for path in agents_paths:
             if len(path) > time_start and len(path) > 1:
                 for i in range(time_start, len(path)):
-                    obstacles.append((path[i][0], path[i][1], i))
+                    k = i - time_start
+                    obstacles.append((path[i][0], path[i][1], k))
                     for j in range(1, self.k + 1):
                         if i - j >= time_start:
-                            obstacles.append((path[i][0], path[i][1], i - j))
-                        obstacles.append((path[i][0], path[i][1], i + j))
+                            obstacles.append((path[i][0], path[i][1], k - j))
+                        obstacles.append((path[i][0], path[i][1], k + j))
                     # Mark last element with negative time to later turn it into idle obstacle
                     if i == len(path) - 1:
-                        obstacles.append((path[i][0], path[i][1], -i))
+                        obstacles.append((path[i][0], path[i][1], -k))
         return obstacles
 
     def get_idle_obstacles_agents(self, agents_paths, time_start):
@@ -80,7 +82,7 @@ class TokenPassingRecovery(object):
             if len(path) == 1:
                 obstacles.append((path[0][0], path[0][1]))
             if 1 < len(path) <= time_start:
-                obstacles.append((path[0][0], path[0][1]))
+                obstacles.append((path[-1][0], path[-1][1]))
         for agent_name in self.token['delayed_agents']:
             obstacles.append(tuple(self.token['agents'][agent_name][0]))
         return obstacles
@@ -106,7 +108,7 @@ class TokenPassingRecovery(object):
                         res = endpoint
         if res == -1:
             print('Error in finding non-task endpoint, is instance well-formed?')
-            exit(0)
+            exit(1)
         return res
 
     def update_ends(self, agent_pos):
@@ -177,7 +179,7 @@ class TokenPassingRecovery(object):
         while len(idle_agents) > 0:
             agent_name = random.choice(list(idle_agents.keys()))
             # agent_name = list(idle_agents.keys())[0]
-            all_idle_agents = self.get_idle_agents()
+            all_idle_agents = self.token['agents'].copy()
             all_idle_agents.pop(agent_name)
             agent_pos = idle_agents.pop(agent_name)[0]
             available_tasks = {}
@@ -197,14 +199,14 @@ class TokenPassingRecovery(object):
                 moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
                 idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), 0)
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_task[0]}
-                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
+                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                 cbs = CBS(env)
                 path_to_task_start = cbs.search()
                 if not path_to_task_start:
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
                     if len(self.token['delayed_agents']) == 0:
-                        print('Instance is not well-formed')
-                        exit(0)
+                        print('Instance is not well-formed or a_star_max_iter is too low for this environment.')
+                        exit(1)
                 else:
                     print("Solution found to task start for agent", agent_name, " searching solution to task goal...")
                     cost1 = env.compute_solution_cost(path_to_task_start)
@@ -212,14 +214,14 @@ class TokenPassingRecovery(object):
                     moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), cost1-1)
                     idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), cost1-1)
                     agent = {'name': agent_name, 'start': closest_task[0], 'goal': closest_task[1]}
-                    env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
+                    env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                     cbs = CBS(env)
                     path_to_task_goal = cbs.search()
                     if not path_to_task_goal:
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
                         if len(self.token['delayed_agents']) == 0:
-                            print('Instance is not well-formed')
-                            exit(0)
+                            print('Instance is not well-formed  or a_star_max_iter is too low for this environment.')
+                            exit(1)
                     else:
                         print("Solution found to task goal for agent", agent_name, " doing task...")
                         cost2 = env.compute_solution_cost(path_to_task_goal)
@@ -248,12 +250,12 @@ class TokenPassingRecovery(object):
                 moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
                 idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), 0)
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_non_task_endpoint}
-                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=1000)
+                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                 cbs = CBS(env)
                 path_to_non_task_endpoint = cbs.search()
                 if not path_to_non_task_endpoint:
                     print("Solution to non-task endpoint not found for agent", agent_name, " instance is not well-formed.")
-                    exit(0)
+                    exit(1)
                 else:
                     print('No available task for agent', agent_name, ' moving to safe idling position...')
                     self.update_ends(agent_pos)
