@@ -19,9 +19,10 @@ Colors = ['orange', 'blue', 'green']
 
 
 class Animation:
-    def __init__(self, map, schedule):
+    def __init__(self, map, schedule, slow_factor=10):
         self.map = map
         self.schedule = schedule
+        self.slow_factor = slow_factor
         self.combined_schedule = {}
         self.combined_schedule.update(self.schedule["schedule"])
 
@@ -101,7 +102,7 @@ class Animation:
         self.anim = animation.FuncAnimation(self.fig, self.animate_func,
                                             init_func=self.init_func,
                                             frames=int(self.T + 1) * 10,
-                                            interval=100,
+                                            interval=10,
                                             blit=True,
                                             repeat=False)
 
@@ -125,7 +126,7 @@ class Animation:
 
     def animate_func(self, i):
         for agent_name, agent in self.combined_schedule.items():
-            pos = self.getState(i / 5, agent)
+            pos = self.getState(i / self.slow_factor, agent)
             p = (pos[0], pos[1])
             self.agents[agent_name].center = p
             self.agent_names[agent_name].set_position(p)
@@ -136,7 +137,7 @@ class Animation:
 
         # Make tasks visible at the right time
         for t in map["tasks"]:
-            if t['start_time'] <= i / 5 + 1 <= self.schedule['completed_tasks_times'][t['task_name']]:
+            if t['start_time'] <= i / self.slow_factor + 1 <= self.schedule['completed_tasks_times'][t['task_name']]:
                 self.tasks[t['task_name']][0].set_alpha(0.5)
                 self.tasks[t['task_name']][1].set_alpha(0.5)
             else:
@@ -196,7 +197,7 @@ if __name__ == "__main__":
     with open(args.schedule) as states_file:
         schedule = yaml.load(states_file, Loader=yaml.FullLoader)
 
-    animation = Animation(map, schedule)
+    animation = Animation(map, schedule, slow_factor=3)
 
     # animation.save('TP_k=5.mp4', 1)
 
