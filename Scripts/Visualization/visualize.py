@@ -197,9 +197,9 @@ if __name__ == "__main__":
     with open(args.schedule) as states_file:
         schedule = yaml.load(states_file, Loader=yaml.FullLoader)
 
-    animation = Animation(map, schedule, slow_factor=3)
+    animation = Animation(map, schedule, slow_factor=5)
 
-    # animation.save('TP_k=5.mp4', 1)
+    # animation.save('TP_recovery_warehouse.mp4', 1)
 
     if args.video:
         animation.save(args.video, args.speed)

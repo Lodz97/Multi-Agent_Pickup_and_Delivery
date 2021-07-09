@@ -36,7 +36,7 @@ class Simulation(object):
         print('Time:', self.time)
         self.delays_now = self.delay_times.count(self.time)
         algorithm.time_forward()
-        agents_to_move = agents
+        agents_to_move = self.agents
         random.shuffle(agents_to_move)
         for agent in agents_to_move:
             current_agent_pos = self.actual_paths[agent['name']][-1]
@@ -106,6 +106,7 @@ if __name__ == '__main__':
     cost = 0
     for path in simulation.actual_paths.values():
         cost = cost + len(path)
-    output = {'schedule': simulation.actual_paths, 'cost': cost, 'completed_tasks_times': tp.get_completed_tasks_times()}
+    output = {'schedule': simulation.actual_paths, 'cost': cost, 'completed_tasks_times': tp.get_completed_tasks_times(),
+              'n_replans': tp.get_n_replans()}
     with open(args.output, 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)

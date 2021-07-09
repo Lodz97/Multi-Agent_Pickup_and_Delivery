@@ -34,6 +34,7 @@ class TokenPassingRecovery(object):
             self.token['tasks'][t['task_name']] = [t['start'], t['goal']]
         self.token['agents_to_tasks'] = {}
         self.token['completed_tasks'] = 0
+        self.token['n_replans'] = 0
         self.token['path_ends'] = set()
         self.token['occupied_non_task_endpoints'] = set()
         self.token['delayed_agents'] = []
@@ -123,6 +124,9 @@ class TokenPassingRecovery(object):
     def get_completed_tasks_times(self):
         return self.token['completed_tasks_times']
 
+    def get_n_replans(self):
+        return self.token['n_replans']
+
     def get_token(self):
         return self.token
 
@@ -146,6 +150,7 @@ class TokenPassingRecovery(object):
             actual_state = self.simulation.get_actual_paths()[name][-1]
             if path[0] != [actual_state['x'], actual_state['y']]:
                 print('Agent', name, 'delayed!')
+                #self.token['n_replans'] = self.token['n_replans'] + 1
                 self.token['delayed_agents'].append(name)
                 delayed_agents_pos.append([actual_state['x'], actual_state['y']])
                 #self.update_ends(path[-1])
@@ -162,6 +167,7 @@ class TokenPassingRecovery(object):
                 for i in range(len(path)):
                     if path[i] in delayed_agents_pos:
                         print('Agent', name, 'affected by delay!')
+                        self.token['n_replans'] = self.token['n_replans'] + 1
                         #self.update_ends(path[-1])
                         if path[0] in self.non_task_endpoints:
                             self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
@@ -209,7 +215,7 @@ class TokenPassingRecovery(object):
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
                     if len(self.token['delayed_agents']) == 0:
                         print('Instance is not well-formed or a_star_max_iter is too low for this environment.')
-                        exit(1)
+                        #exit(1)
                 else:
                     print("Solution found to task start for agent", agent_name, " searching solution to task goal...")
                     cost1 = env.compute_solution_cost(path_to_task_start)
@@ -224,7 +230,7 @@ class TokenPassingRecovery(object):
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
                         if len(self.token['delayed_agents']) == 0:
                             print('Instance is not well-formed  or a_star_max_iter is too low for this environment.')
-                            exit(1)
+                            #exit(1)
                     else:
                         print("Solution found to task goal for agent", agent_name, " doing task...")
                         cost2 = env.compute_solution_cost(path_to_task_goal)
