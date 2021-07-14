@@ -5,6 +5,7 @@ import os
 from Scripts.TP_with_recovery import TokenPassingRecovery
 import RoothPath
 from Scripts.simulation import Simulation
+from Scripts.simulation_new_recovery import SimulationNewRecovery
 from statistics import *
 
 
@@ -38,10 +39,12 @@ if __name__ == '__main__':
     costs = []
     replans = []
     n_sim = 10
-    for k in [5]:
+    for k in [3]:
         for i in range(n_sim):
-            simulation = Simulation(tasks, agents, delays=delays)
-            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=10000, k=k)
+            #simulation = Simulation(tasks, agents, delays=delays)
+            #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=10000, k=k)
+            simulation = SimulationNewRecovery(tasks, agents, delays=delays)
+            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k, new_recovery=True)
             while tp.get_completed_tasks() != len(tasks):
                 simulation.time_forward(tp)
             cost = 0

@@ -8,7 +8,7 @@ from Scripts.CBS.cbs import CBS, Environment
 
 
 class TokenPassingRecovery(object):
-    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1):
+    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1, new_recovery=False):
         self.agents = agents
         self.dimensions = dimesions
         self.obstacles = obstacles
@@ -24,6 +24,7 @@ class TokenPassingRecovery(object):
         if k < 1:
             print('k should be >= 1!')
             exit(1)
+        self.new_recovery = new_recovery
         self.init_token()
 
     def init_token(self):
@@ -144,39 +145,55 @@ class TokenPassingRecovery(object):
                 self.token['agents_to_tasks'].pop(agent_name)
 
         # Check delayed agents and agents affected by delays
-        self.token['delayed_agents'] = []
-        delayed_agents_pos = []
-        for name, path in self.token['agents'].items():
-            actual_state = self.simulation.get_actual_paths()[name][-1]
-            if path[0] != [actual_state['x'], actual_state['y']]:
-                print('Agent', name, 'delayed!')
-                #self.token['n_replans'] = self.token['n_replans'] + 1
-                self.token['delayed_agents'].append(name)
-                delayed_agents_pos.append([actual_state['x'], actual_state['y']])
-                #self.update_ends(path[-1])
-                pos = tuple([actual_state['x'], actual_state['y']])
-                if pos in self.non_task_endpoints:
-                    self.token['occupied_non_task_endpoints'].add(pos)
+        if self.new_recovery:
+            self.token['delayed_agents'] = self.simulation.get_delayed_agents()
+            for name in self.token['delayed_agents']:
+                print('Agent', name, 'delayed or affected by delay!')
+                path = self.token['agents'][name]
+                self.token['n_replans'] = self.token['n_replans'] + 1
+                # self.update_ends(path[-1])
+                if path[0] in self.non_task_endpoints:
+                    self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
                 else:
-                    self.token['path_ends'].add(pos)
-                if self.token['agents_to_tasks'][name]['start'] not in path:
-                    self.token['delayed_agents_to_reach_task_start'].append(name)
-                self.token['agents'][name] = [[actual_state['x'], actual_state['y']]]
-        for name, path in self.token['agents'].items():
-            if name not in self.token['delayed_agents']:
-                for i in range(len(path)):
-                    if path[i] in delayed_agents_pos:
-                        print('Agent', name, 'affected by delay!')
-                        self.token['n_replans'] = self.token['n_replans'] + 1
-                        #self.update_ends(path[-1])
-                        if path[0] in self.non_task_endpoints:
-                            self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
-                        else:
-                            self.token['path_ends'].add(tuple(path[0]))
-                        if self.token['agents_to_tasks'][name]['start'] not in path:
-                            self.token['delayed_agents_to_reach_task_start'].append(name)
-                        self.token['agents'][name] = [path[0]]
-                        break
+                    self.token['path_ends'].add(tuple(path[0]))
+                if name in self.token['agents_to_tasks']:
+                    if self.token['agents_to_tasks'][name]['start'] not in path:
+                        self.token['delayed_agents_to_reach_task_start'].append(name)
+                self.token['agents'][name] = [path[0]]
+        else:
+            self.token['delayed_agents'] = []
+            delayed_agents_pos = []
+            for name, path in self.token['agents'].items():
+                actual_state = self.simulation.get_actual_paths()[name][-1]
+                if path[0] != [actual_state['x'], actual_state['y']]:
+                    print('Agent', name, 'delayed!')
+                    #self.token['n_replans'] = self.token['n_replans'] + 1
+                    self.token['delayed_agents'].append(name)
+                    delayed_agents_pos.append([actual_state['x'], actual_state['y']])
+                    #self.update_ends(path[-1])
+                    pos = tuple([actual_state['x'], actual_state['y']])
+                    if pos in self.non_task_endpoints:
+                        self.token['occupied_non_task_endpoints'].add(pos)
+                    else:
+                        self.token['path_ends'].add(pos)
+                    if self.token['agents_to_tasks'][name]['start'] not in path:
+                        self.token['delayed_agents_to_reach_task_start'].append(name)
+                    self.token['agents'][name] = [[actual_state['x'], actual_state['y']]]
+            for name, path in self.token['agents'].items():
+                if name not in self.token['delayed_agents']:
+                    for i in range(len(path)):
+                        if path[i] in delayed_agents_pos:
+                            print('Agent', name, 'affected by delay!')
+                            self.token['n_replans'] = self.token['n_replans'] + 1
+                            #self.update_ends(path[-1])
+                            if path[0] in self.non_task_endpoints:
+                                self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
+                            else:
+                                self.token['path_ends'].add(tuple(path[0]))
+                            if self.token['agents_to_tasks'][name]['start'] not in path:
+                                self.token['delayed_agents_to_reach_task_start'].append(name)
+                            self.token['agents'][name] = [path[0]]
+                            break
 
         # Collect new tasks and assign them, if possible
         for t in self.simulation.get_new_tasks():
@@ -275,9 +292,10 @@ class TokenPassingRecovery(object):
                         self.token['agents'][agent_name].append([el['x'], el['y']])
 
         # Advance along paths in the token
-        for name, path in self.token['agents'].items():
-            if len(path) > 1:
-                self.token['agents'][name] = path[1:]
+        if not self.new_recovery:
+            for name, path in self.token['agents'].items():
+                if len(path) > 1:
+                    self.token['agents'][name] = path[1:]
 
 
                         
