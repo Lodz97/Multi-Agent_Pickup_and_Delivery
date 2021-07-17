@@ -40,6 +40,9 @@ class TokenPassingRecovery(object):
         self.token['occupied_non_task_endpoints'] = set()
         self.token['delayed_agents'] = []
         self.token['delayed_agents_to_reach_task_start'] = []
+        self.token['agent_at_end_path'] = []
+        self.token['agent_at_end_path_pos'] = []
+        self.token['agents_in_recovery_trial'] = []
         for a in self.agents:
             self.token['agents'][a['name']] = [a['start']]
             self.token['path_ends'].add(tuple(a['start']))
@@ -93,6 +96,9 @@ class TokenPassingRecovery(object):
         for task_name, task in self.token['tasks'].items():
             if tuple(task[1]) == tuple(agent_pos):
                 return False
+        for goal in self.get_agents_to_tasks_goals():
+            if tuple(goal) == tuple(agent_pos):
+                return False
         return True
 
     def get_closest_non_task_endpoint(self, agent_pos):
@@ -119,6 +125,12 @@ class TokenPassingRecovery(object):
         elif tuple(agent_pos) in self.token['occupied_non_task_endpoints']:
             self.token['occupied_non_task_endpoints'].remove(tuple(agent_pos))
 
+    def get_agents_to_tasks_goals(self):
+        goals = []
+        for el in self.token['agents_to_tasks'].values():
+            goals.append(el['goal'])
+        return goals
+
     def get_completed_tasks(self):
         return self.token['completed_tasks']
 
@@ -130,6 +142,35 @@ class TokenPassingRecovery(object):
 
     def get_token(self):
         return self.token
+
+    def go_to_closest_non_task_endpoint(self, agent_name, agent_pos, all_idle_agents, all_delayed_agents, recovery_trial=False):
+        if recovery_trial:
+            closest_non_task_endpoint = random.choice([x for x in self.non_task_endpoints if x not in self.token['occupied_non_task_endpoints']])
+        else:
+            closest_non_task_endpoint = self.get_closest_non_task_endpoint(agent_pos)
+        moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
+        idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, 0)
+        agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_non_task_endpoint}
+        env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents,
+                          a_star_max_iter=self.a_star_max_iter)
+        cbs = CBS(env)
+        path_to_non_task_endpoint = cbs.search()
+        if not path_to_non_task_endpoint:
+            print("Solution to non-task endpoint not found for agent", agent_name, " instance is not well-formed.")
+            #exit(1)
+        else:
+            print('No available task for agent', agent_name, ' moving to safe idling position...')
+            self.update_ends(agent_pos)
+            self.token['occupied_non_task_endpoints'].add(tuple(closest_non_task_endpoint))
+            if not recovery_trial:
+                self.token['agents_to_tasks'][agent_name] = {'task_name': 'safe_idle', 'start': agent_pos,
+                                                             'goal': closest_non_task_endpoint, 'predicted_cost': 0}
+            else:
+                self.token['agents_in_recovery_trial'].append(agent_name)
+            self.token['agents'][agent_name] = []
+            for el in path_to_non_task_endpoint[agent_name]:
+                self.token['agents'][agent_name].append([el['x'], el['y']])
+
 
     def time_forward(self):
         # Update completed tasks
@@ -151,7 +192,10 @@ class TokenPassingRecovery(object):
                 print('Agent', name, 'delayed or affected by delay!')
                 path = self.token['agents'][name]
                 self.token['n_replans'] = self.token['n_replans'] + 1
-                # self.update_ends(path[-1])
+                # Update only if task is recovery trial
+                if path[-1] in self.non_task_endpoints and name in self.token['agents_in_recovery_trial']:
+                    self.update_ends(path[-1])
+                    self.token['agents_in_recovery_trial'].remove(name)
                 if path[0] in self.non_task_endpoints:
                     self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
                 else:
@@ -170,7 +214,10 @@ class TokenPassingRecovery(object):
                     #self.token['n_replans'] = self.token['n_replans'] + 1
                     self.token['delayed_agents'].append(name)
                     delayed_agents_pos.append([actual_state['x'], actual_state['y']])
-                    #self.update_ends(path[-1])
+                    # Update only if task is recovery trial
+                    if path[-1] in self.non_task_endpoints and name in self.token['agents_in_recovery_trial']:
+                        self.update_ends(path[-1])
+                        self.token['agents_in_recovery_trial'].remove(name)
                     pos = tuple([actual_state['x'], actual_state['y']])
                     if pos in self.non_task_endpoints:
                         self.token['occupied_non_task_endpoints'].add(pos)
@@ -185,7 +232,10 @@ class TokenPassingRecovery(object):
                         if path[i] in delayed_agents_pos:
                             print('Agent', name, 'affected by delay!')
                             self.token['n_replans'] = self.token['n_replans'] + 1
-                            #self.update_ends(path[-1])
+                            # Update only if task is recovery trial
+                            if path[-1] in self.non_task_endpoints and name in self.token['agents_in_recovery_trial']:
+                                self.update_ends(path[-1])
+                                self.token['agents_in_recovery_trial'].remove(name)
                             if path[0] in self.non_task_endpoints:
                                 self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
                             else:
@@ -194,6 +244,24 @@ class TokenPassingRecovery(object):
                                 self.token['delayed_agents_to_reach_task_start'].append(name)
                             self.token['agents'][name] = [path[0]]
                             break
+
+        for name, path in self.token['agents'].items():
+            if name not in self.token['agent_at_end_path']:
+                for i in range(len(path)):
+                    if path[i] in self.token['agent_at_end_path_pos']:
+                        print('Agent', name, 'will impact end task agent, replanning...')
+                        # self.update_ends(path[-1])
+                        if path[0] in self.non_task_endpoints:
+                            self.token['occupied_non_task_endpoints'].add(tuple(path[0]))
+                        else:
+                            self.token['path_ends'].add(tuple(path[0]))
+                        # TODO check this rare keyerror
+                        if self.token['agents_to_tasks'][name]['start'] not in path:
+                            self.token['delayed_agents_to_reach_task_start'].append(name)
+                        self.token['agents'][name] = [path[0]]
+                        break
+        self.token['agent_at_end_path'] = []
+        self.token['agent_at_end_path_pos'] = []
 
         # Collect new tasks and assign them, if possible
         for t in self.simulation.get_new_tasks():
@@ -210,7 +278,8 @@ class TokenPassingRecovery(object):
             agent_pos = idle_agents.pop(agent_name)[0]
             available_tasks = {}
             for task_name, task in self.token['tasks'].items():
-                if tuple(task[0]) not in self.token['path_ends'].difference({tuple(agent_pos)}) and tuple(task[1]) not in self.token['path_ends'].difference({tuple(agent_pos)}):
+                if tuple(task[0]) not in self.token['path_ends'].difference({tuple(agent_pos)}) and tuple(task[1]) not in self.token['path_ends'].difference({tuple(agent_pos)})\
+                        and tuple(task[1]) not in self.get_agents_to_tasks_goals():
                     available_tasks[task_name] = task
             if len(available_tasks) > 0 or agent_name in self.token['agents_to_tasks']:
                 if agent_name in self.token['agents_to_tasks']:
@@ -232,6 +301,7 @@ class TokenPassingRecovery(object):
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
                     if len(self.token['delayed_agents']) == 0:
                         print('Instance is not well-formed or a_star_max_iter is too low for this environment.')
+                        self.go_to_closest_non_task_endpoint(agent_name, agent_pos, all_idle_agents, all_delayed_agents, recovery_trial=True)
                         #exit(1)
                 else:
                     print("Solution found to task start for agent", agent_name, " searching solution to task goal...")
@@ -247,6 +317,7 @@ class TokenPassingRecovery(object):
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
                         if len(self.token['delayed_agents']) == 0:
                             print('Instance is not well-formed  or a_star_max_iter is too low for this environment.')
+                            self.go_to_closest_non_task_endpoint(agent_name, agent_pos, all_idle_agents, all_delayed_agents, recovery_trial=True)
                             #exit(1)
                     else:
                         print("Solution found to task goal for agent", agent_name, " doing task...")
@@ -271,25 +342,11 @@ class TokenPassingRecovery(object):
                             self.token['agents'][agent_name].append([el['x'], el['y']])
             elif self.check_safe_idle(agent_pos):
                 print('No available tasks for agent', agent_name, ' idling at current position...')
+                self.token['agent_at_end_path'].append(agent_name)
+                self.token['agent_at_end_path_pos'].append(agent_pos)
             else:
-                closest_non_task_endpoint = self.get_closest_non_task_endpoint(agent_pos)
-                moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
-                idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, 0)
-                agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_non_task_endpoint}
-                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
-                cbs = CBS(env)
-                path_to_non_task_endpoint = cbs.search()
-                if not path_to_non_task_endpoint:
-                    print("Solution to non-task endpoint not found for agent", agent_name, " instance is not well-formed.")
-                    exit(1)
-                else:
-                    print('No available task for agent', agent_name, ' moving to safe idling position...')
-                    self.update_ends(agent_pos)
-                    self.token['occupied_non_task_endpoints'].add(tuple(closest_non_task_endpoint))
-                    self.token['agents_to_tasks'][agent_name] = {'task_name': 'safe_idle', 'start': agent_pos,'goal': closest_non_task_endpoint, 'predicted_cost': 0}
-                    self.token['agents'][agent_name] = []
-                    for el in path_to_non_task_endpoint[agent_name]:
-                        self.token['agents'][agent_name].append([el['x'], el['y']])
+                self.go_to_closest_non_task_endpoint(agent_name, agent_pos, all_idle_agents, all_delayed_agents)
+
 
         # Advance along paths in the token
         if not self.new_recovery:
@@ -298,7 +355,7 @@ class TokenPassingRecovery(object):
                     self.token['agents'][name] = path[1:]
 
 
-                        
+
 
 
 
