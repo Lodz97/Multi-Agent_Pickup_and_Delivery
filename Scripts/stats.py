@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # Simulate
     costs = []
     replans = []
-    n_sim = 10
+    n_sim = 100
     for k in [1]:
         for i in range(n_sim):
             #simulation = Simulation(tasks, agents, delays=delays)

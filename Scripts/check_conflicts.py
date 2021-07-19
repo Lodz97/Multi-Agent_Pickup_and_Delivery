@@ -40,13 +40,12 @@ if __name__ == '__main__':
     states_dict = defaultdict(lambda: 0)
     n_conflicts = 0
     start_time = time.time()
-    for k in [1]:
+    for k in [0]:
         for i in range(n_sim):
             #simulation = Simulation(tasks, agents, delays=delays)
             #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k)
             simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation,
-                                      a_star_max_iter=1000, k=k, new_recovery=True)
+            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k, new_recovery=True)
             while tp.get_completed_tasks() != len(tasks):
                 simulation.time_forward(tp)
             for path in simulation.actual_paths.values():

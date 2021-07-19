@@ -212,6 +212,11 @@ class Environment(object):
             and (state.location.x, state.location.y, state.time) not in self.moving_obstacles
 
     def transition_valid(self, state_1, state_2):
+        tup_1 = (state_1.location.x, state_1.location.y, state_2.time)
+        tup_2 = (state_2.location.x, state_2.location.y, state_1.time)
+        if tup_1 in self.moving_obstacles and tup_2 in self.moving_obstacles and \
+                self.moving_obstacles[tup_1] == self.moving_obstacles[tup_2]:
+            return False
         return EdgeConstraint(state_1.time, state_1.location, state_2.location) not in self.constraints.edge_constraints
 
     def is_solution(self, agent_name):
