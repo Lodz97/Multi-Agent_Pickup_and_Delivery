@@ -4,7 +4,6 @@ import yaml
 import json
 import os
 from Scripts.TP_with_recovery import TokenPassingRecovery
-from Scripts.TP_test import TokenPassingRecoveryTest
 import RoothPath
 from Scripts.simulation import Simulation
 from Scripts.simulation_new_recovery import SimulationNewRecovery
@@ -41,7 +40,7 @@ if __name__ == '__main__':
     states_dict = defaultdict(lambda: 0)
     n_conflicts = 0
     start_time = time.time()
-    for k in [0]:
+    for k in [1]:
         for i in range(n_sim):
             #simulation = Simulation(tasks, agents, delays=delays)
             #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k)

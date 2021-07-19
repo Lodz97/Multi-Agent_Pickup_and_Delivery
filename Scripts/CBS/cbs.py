@@ -198,11 +198,11 @@ class Environment(object):
             return solution[agent_name][-1]
 
     def get_all_obstacles(self, time):
-        all_obs = []
+        all_obs = set()
         for o in self.moving_obstacles:
             if o[2] < 0 and time >= -o[2]:
-                all_obs.append((o[0], o[1]))
-        return self.obstacles + all_obs
+                all_obs.add((o[0], o[1]))
+        return self.obstacles | all_obs
 
     def state_valid(self, state):
         return state.location.x >= 0 and state.location.x < self.dimension[0] \

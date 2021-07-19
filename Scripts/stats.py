@@ -39,12 +39,12 @@ if __name__ == '__main__':
     costs = []
     replans = []
     n_sim = 10
-    for k in [3]:
+    for k in [1]:
         for i in range(n_sim):
             #simulation = Simulation(tasks, agents, delays=delays)
-            #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=10000, k=k)
+            #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k)
             simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k, new_recovery=True)
+            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k, new_recovery=True)
             while tp.get_completed_tasks() != len(tasks):
                 simulation.time_forward(tp)
             cost = 0

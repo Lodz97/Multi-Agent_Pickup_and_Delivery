@@ -66,30 +66,30 @@ class TokenPassingRecovery(object):
         return closest
 
     def get_moving_obstacles_agents(self, agents_paths, time_start):
-        obstacles = []
+        obstacles = set()
         for path in agents_paths:
             if len(path) > time_start and len(path) > 1:
                 for i in range(time_start, len(path)):
                     k = i - time_start
-                    obstacles.append((path[i][0], path[i][1], k))
+                    obstacles.add((path[i][0], path[i][1], k))
                     for j in range(1, self.k + 1):
                         if i - j >= time_start:
-                            obstacles.append((path[i][0], path[i][1], k - j))
-                        obstacles.append((path[i][0], path[i][1], k + j))
+                            obstacles.add((path[i][0], path[i][1], k - j))
+                        obstacles.add((path[i][0], path[i][1], k + j))
                     # Mark last element with negative time to later turn it into idle obstacle
                     if i == len(path) - 1:
-                        obstacles.append((path[i][0], path[i][1], -k))
+                        obstacles.add((path[i][0], path[i][1], -k))
         return obstacles
 
     def get_idle_obstacles_agents(self, agents_paths, delayed_agents, time_start):
-        obstacles = []
+        obstacles = set()
         for path in agents_paths:
             if len(path) == 1:
-                obstacles.append((path[0][0], path[0][1]))
+                obstacles.add((path[0][0], path[0][1]))
             if 1 < len(path) <= time_start:
-                obstacles.append((path[-1][0], path[-1][1]))
+                obstacles.add((path[-1][0], path[-1][1]))
         for agent_name in delayed_agents:
-            obstacles.append(tuple(self.token['agents'][agent_name][0]))
+            obstacles.add(tuple(self.token['agents'][agent_name][0]))
         return obstacles
 
     def check_safe_idle(self, agent_pos):
@@ -148,7 +148,7 @@ class TokenPassingRecovery(object):
         moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
         idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, 0)
         agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_non_task_endpoint}
-        env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents,
+        env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents,
                           a_star_max_iter=self.a_star_max_iter)
         cbs = CBS(env)
         path_to_non_task_endpoint = cbs.search()
@@ -178,7 +178,7 @@ class TokenPassingRecovery(object):
         moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
         idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, 0)
         agent = {'name': agent_name, 'start': agent_pos, 'goal': random_close_cell}
-        env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents,
+        env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents,
                           a_star_max_iter=self.a_star_max_iter)
         cbs = CBS(env)
         path_to_non_task_endpoint = cbs.search()
@@ -311,7 +311,7 @@ class TokenPassingRecovery(object):
                 moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), 0)
                 idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, 0)
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_task[0]}
-                env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
+                env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                 cbs = CBS(env)
                 path_to_task_start = cbs.search()
                 if not path_to_task_start:
@@ -327,7 +327,7 @@ class TokenPassingRecovery(object):
                     moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'].values(), cost1-1)
                     idle_obstacles_agents = self.get_idle_obstacles_agents(all_idle_agents.values(), all_delayed_agents, cost1-1)
                     agent = {'name': agent_name, 'start': closest_task[0], 'goal': closest_task[1]}
-                    env = Environment(self.dimensions, [agent], self.obstacles + idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
+                    env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                     cbs = CBS(env)
                     path_to_task_goal = cbs.search()
                     if not path_to_task_goal:

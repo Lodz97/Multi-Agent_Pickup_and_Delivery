@@ -78,7 +78,8 @@ class SimulationNewRecovery(object):
                     if len(algorithm.get_token()['agents'][agent['name']]) > 1:
                         x_new = algorithm.get_token()['agents'][agent['name']][1][0]
                         y_new = algorithm.get_token()['agents'][agent['name']][1][1]
-                        if tuple([x_new, y_new]) not in self.agents_pos_now:
+                        if tuple([x_new, y_new]) not in self.agents_pos_now or \
+                                tuple([x_new, y_new]) == tuple(tuple([current_agent_pos['x'], current_agent_pos['y']])):
                             self.agents_moved.add(agent['name'])
                             self.agents_pos_now.remove(tuple([current_agent_pos['x'], current_agent_pos['y']]))
                             self.agents_pos_now.add(tuple([x_new, y_new]))
@@ -139,7 +140,7 @@ if __name__ == '__main__':
 
     # Simulate
     simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=1, new_recovery=True)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=5, new_recovery=True)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 
