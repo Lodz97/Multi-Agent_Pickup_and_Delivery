@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
     # Simulate
     simulation = Simulation(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=1)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=5)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 

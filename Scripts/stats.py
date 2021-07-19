@@ -7,7 +7,7 @@ import RoothPath
 from Scripts.simulation import Simulation
 from Scripts.simulation_new_recovery import SimulationNewRecovery
 from statistics import *
-
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -38,8 +38,11 @@ if __name__ == '__main__':
     # Simulate
     costs = []
     replans = []
-    n_sim = 100
-    for k in [1]:
+    n_sim = 30
+    k_list = [0, 1, 2, 3, 4, 5, 10]
+    mean_costs_list = []
+    mean_replans_list = []
+    for k in k_list:
         for i in range(n_sim):
             #simulation = Simulation(tasks, agents, delays=delays)
             #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k)
@@ -55,5 +58,12 @@ if __name__ == '__main__':
         print('k:', k)
         print('Average cost:', mean(costs))
         print('Average number of replans:', mean(replans))
+        mean_costs_list.append(mean(costs))
+        mean_replans_list.append(mean(replans))
+    plot1 = plt.figure(1)
+    plt.plot(k_list, mean_costs_list, '-o')
+    plot2 = plt.figure(2)
+    plt.plot(k_list, mean_replans_list, '-o')
+    plt.show()
 
 

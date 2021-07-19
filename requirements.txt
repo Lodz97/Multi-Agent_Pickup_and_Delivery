@@ -3,3 +3,4 @@ matplotlib
 scipy
 ffmpeg-python
 yaml
+PyYAML
