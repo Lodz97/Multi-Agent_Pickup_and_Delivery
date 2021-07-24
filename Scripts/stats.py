@@ -38,8 +38,8 @@ if __name__ == '__main__':
     # Simulate
     costs = []
     replans = []
-    n_sim = 30
-    k_list = [0, 1, 2, 3, 4, 5, 10]
+    n_sim = 40
+    k_list = [0, 1, 2, 3, 4, 5]
     mean_costs_list = []
     mean_replans_list = []
     for k in k_list:

@@ -55,16 +55,18 @@ class SimulationNewRecovery(object):
             else:
                 if self.delays is not None:
                     if self.time in self.delays[agent['name']]:
-                        self.delayed_agents.add(agent['name'])
+                        self.agents_moved.add(agent['name'])
+                        #self.delayed_agents.add(agent['name'])
                         # Don't consider forced replans
-                        algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
+                        #algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
                         self.actual_paths[agent['name']].append(
                             {'t': self.time, 'x': current_agent_pos['x'], 'y': current_agent_pos['y']})
                 elif self.delays_now > 0:
                     self.delays_now = self.delays_now - 1
-                    self.delayed_agents.add(agent['name'])
+                    self.agents_moved.add(agent['name'])
+                    #self.delayed_agents.add(agent['name'])
                     # Don't consider forced replans
-                    algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
+                    #algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
                     self.actual_paths[agent['name']].append(
                         {'t': self.time, 'x': current_agent_pos['x'], 'y': current_agent_pos['y']})
         # Check moving agents doesn't collide with others
