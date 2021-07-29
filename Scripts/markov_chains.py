@@ -26,7 +26,7 @@ class MarkovChainsMaker(object):
             self.chains[agent] = sparse.csr_matrix(chain)
             s = np.zeros([1, chain.shape[0]])
             s[0][0] = 1
-            for i in range(1, self.max_path):
+            for i in range(1, len(path)):
                 if i not in prob_dic:
                     prob_dic[i] = {}
                 s = np.matmul(s, chain)

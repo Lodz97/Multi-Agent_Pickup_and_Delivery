@@ -5,10 +5,11 @@ author: Giacomo Lodigiani (@Lodz97)
 from math import fabs
 import random
 from Scripts.CBS.cbs import CBS, Environment
+from Scripts.markov_chains import MarkovChainsMaker
 
 
 class TokenPassingRecovery(object):
-    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1, new_recovery=False):
+    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1, p_max=None, pd=None, p_iter=1, new_recovery=False):
         self.agents = agents
         self.dimensions = dimesions
         self.obstacles = obstacles
@@ -22,10 +23,22 @@ class TokenPassingRecovery(object):
         self.a_star_max_iter = a_star_max_iter
         self.k = k
         if k < 0:
-            print('k should be >= 0!')
+            print('k should be >= 0')
             exit(1)
         if k == 0 and not new_recovery:
             print('k = 0 not supported for this recovery type')
+            exit(1)
+        self.p_max = p_max
+        if p_max and (p_max < 0 or p_max > 1):
+            print('Max conflict probability must be between 0 and 1')
+            exit(1)
+        self.pd = pd
+        if pd and (pd < 0 or pd > 1):
+            print('Probability of delay must be between 0 and 1')
+            exit(1)
+        self.p_iter = p_iter
+        if p_iter <= 0:
+            print('p_iter should be > 0')
             exit(1)
         self.new_recovery = new_recovery
         self.init_token()
@@ -146,6 +159,27 @@ class TokenPassingRecovery(object):
     def get_token(self):
         return self.token
 
+    def search(self, cbs, agent_name, moving_obstacles_agents):
+        path = None
+        if not self.pd:
+            path = cbs.search()
+        else:
+            mk = MarkovChainsMaker(self.token['agents'], self.pd)
+            for iter in range(self.p_iter):
+                path = cbs.search()
+                tmp = []
+                if path and len(path[agent_name]) > 1:
+                    for el in path[agent_name]:
+                        tmp.append([el['x'], el['y']])
+                    dic = mk.get_conflict_prob_given_path(tmp)
+                    if dic['prob'] > self.p_max:
+                        print('Conflict probablility to high (', dic['prob'], ') replanning...')
+                        path = None
+                        moving_obstacles_agents[(dic['pos_max_conf'][0], dic['pos_max_conf'][1], -1)] = agent_name
+                    else:
+                        break
+        return path
+
     def go_to_closest_non_task_endpoint(self, agent_name, agent_pos, all_idle_agents, all_delayed_agents):
         closest_non_task_endpoint = self.get_closest_non_task_endpoint(agent_pos)
         moving_obstacles_agents = self.get_moving_obstacles_agents(self.token['agents'], 0)
@@ -154,7 +188,7 @@ class TokenPassingRecovery(object):
         env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents,
                           a_star_max_iter=self.a_star_max_iter)
         cbs = CBS(env)
-        path_to_non_task_endpoint = cbs.search()
+        path_to_non_task_endpoint = self.search(cbs, agent_name, moving_obstacles_agents)
         if not path_to_non_task_endpoint:
             print("Solution to non-task endpoint not found for agent", agent_name, " instance is not well-formed.")
             self.deadlock_recovery( agent_name, agent_pos, all_idle_agents, all_delayed_agents, 4)
@@ -184,7 +218,7 @@ class TokenPassingRecovery(object):
         env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents,
                           a_star_max_iter=self.a_star_max_iter)
         cbs = CBS(env)
-        path_to_non_task_endpoint = cbs.search()
+        path_to_non_task_endpoint = self.search(cbs, agent_name, moving_obstacles_agents)
         if not path_to_non_task_endpoint:
             print("No solution to deadlock recovery for agent", agent_name, " retrying later.")
         else:
@@ -316,7 +350,7 @@ class TokenPassingRecovery(object):
                 agent = {'name': agent_name, 'start': agent_pos, 'goal': closest_task[0]}
                 env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                 cbs = CBS(env)
-                path_to_task_start = cbs.search()
+                path_to_task_start = self.search(cbs, agent_name, moving_obstacles_agents)
                 if not path_to_task_start:
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
                     if len(self.token['delayed_agents']) == 0:
@@ -332,7 +366,7 @@ class TokenPassingRecovery(object):
                     agent = {'name': agent_name, 'start': closest_task[0], 'goal': closest_task[1]}
                     env = Environment(self.dimensions, [agent], set(self.obstacles) | idle_obstacles_agents, moving_obstacles_agents, a_star_max_iter=self.a_star_max_iter)
                     cbs = CBS(env)
-                    path_to_task_goal = cbs.search()
+                    path_to_task_goal = self.search(cbs, agent_name, moving_obstacles_agents)
                     if not path_to_task_goal:
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
                         if len(self.token['delayed_agents']) == 0:

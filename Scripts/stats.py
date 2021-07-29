@@ -38,8 +38,9 @@ if __name__ == '__main__':
     # Simulate
     costs = []
     replans = []
-    n_sim = 40
-    k_list = [0, 1, 2, 3, 4, 5]
+    n_sim = 20
+    #k_list = [0, 1, 2, 3, 4, 5]
+    k_list = [1, 0.5, 0.3, 0.2, 0.1, 0.02]
     mean_costs_list = []
     mean_replans_list = []
     for k in k_list:
@@ -47,7 +48,9 @@ if __name__ == '__main__':
             #simulation = Simulation(tasks, agents, delays=delays)
             #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k)
             simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k, new_recovery=True)
+            #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k, new_recovery=True)
+            tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation,
+                                      a_star_max_iter=1000, k=0, p_max=k, pd=0.1, p_iter=5, new_recovery=True)
             while tp.get_completed_tasks() != len(tasks):
                 simulation.time_forward(tp)
             cost = 0
