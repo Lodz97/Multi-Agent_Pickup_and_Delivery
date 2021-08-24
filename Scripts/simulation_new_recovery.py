@@ -1,10 +1,11 @@
-import random
 import argparse
 import yaml
 import json
 import os
+from collections import defaultdict
 from Scripts.TP_with_recovery import TokenPassingRecovery
 import RoothPath
+from Scripts.tasks_and_delays_maker import *
 
 
 class SimulationNewRecovery(object):
@@ -22,6 +23,7 @@ class SimulationNewRecovery(object):
         self.agents_pos_now = set()
         self.agents_moved = set()
         self.actual_paths = {}
+        self.times_agent_delayed = defaultdict(lambda: 0)
         self.delays_now = 0
         self.initialize_simulation()
 
@@ -33,6 +35,12 @@ class SimulationNewRecovery(object):
         if self.delays is None:
             max_t = max(self.start_times)
             self.delay_times = random.choices(range(1, max_t + 10), k=self.n_delays)
+
+    def increase_delay_counter(self, agent, k):
+        self.times_agent_delayed[agent['name']] += 1
+        if self.times_agent_delayed[agent['name']] == k:
+            self.times_agent_delayed[agent['name']] = 0
+            self.delayed_agents.add(agent['name'])
 
     def time_forward(self, algorithm):
         self.time = self.time + 1
@@ -49,6 +57,8 @@ class SimulationNewRecovery(object):
             current_agent_pos = self.actual_paths[agent['name']][-1]
             self.agents_pos_now.add(tuple([current_agent_pos['x'], current_agent_pos['y']]))
             if len(algorithm.get_token()['agents'][agent['name']]) == 1:
+                if algorithm.get_replan_every_k_delays():
+                    self.times_agent_delayed[agent['name']] = 0
                 self.agents_moved.add(agent['name'])
                 self.actual_paths[agent['name']].append(
                     {'t': self.time, 'x': current_agent_pos['x'], 'y': current_agent_pos['y']})
@@ -56,6 +66,8 @@ class SimulationNewRecovery(object):
                 if self.delays is not None:
                     if self.time in self.delays[agent['name']]:
                         self.agents_moved.add(agent['name'])
+                        if algorithm.get_replan_every_k_delays():
+                            self.increase_delay_counter(agent, algorithm.get_k())
                         #self.delayed_agents.add(agent['name'])
                         # Don't consider forced replans
                         #algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
@@ -64,6 +76,8 @@ class SimulationNewRecovery(object):
                 elif self.delays_now > 0:
                     self.delays_now = self.delays_now - 1
                     self.agents_moved.add(agent['name'])
+                    if algorithm.get_replan_every_k_delays():
+                        self.increase_delay_counter(agent, algorithm.get_k())
                     #self.delayed_agents.add(agent['name'])
                     # Don't consider forced replans
                     #algorithm.get_token()['n_replans'] = algorithm.get_token()['n_replans'] - 1
@@ -93,6 +107,8 @@ class SimulationNewRecovery(object):
             current_agent_pos = self.actual_paths[agent['name']][-1]
             if agent['name'] not in self.delayed_agents:
                 self.delayed_agents.add(agent['name'])
+                if algorithm.get_replan_every_k_delays():
+                    self.times_agent_delayed[agent['name']] = 0
                 self.agents_pos_now.add(tuple([current_agent_pos['x'], current_agent_pos['y']]))
                 self.actual_paths[agent['name']].append(
                     {'t': self.time, 'x': current_agent_pos['x'], 'y': current_agent_pos['y']})
@@ -137,12 +153,20 @@ if __name__ == '__main__':
     obstacles = param['map']['obstacles']
     non_task_endpoints = param['map']['non_task_endpoints']
     agents = param['agents']
-    tasks = param['tasks']
-    delays = param['delays']
+    # Old fixed tasks and delays
+    #tasks = param['tasks']
+    #delays = param['delays']
+    # Generate random tasks and delays
+    tasks, delays = gen_tasks_and_delays(agents, param['start_locations'], param['goal_locations'], param['n_tasks'], param['task_freq'], param['n_delays_per_agent'])
+    param['tasks'] = tasks
+    param['delays'] = delays
+    with open(args.param + config['visual_postfix'], 'w') as param_file:
+        yaml.safe_dump(param, param_file)
 
     # Simulate
     simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=0, p_max=0.01, pd=0.05, p_iter=10, new_recovery=True)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=1,
+                              replan_every_k_delays=True, pd=0, p_max=0.01, p_iter=10, new_recovery=True)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 

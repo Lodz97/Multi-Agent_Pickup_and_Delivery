@@ -7,6 +7,7 @@ from Scripts.TP_with_recovery import TokenPassingRecovery
 import RoothPath
 from Scripts.simulation import Simulation
 from Scripts.simulation_new_recovery import SimulationNewRecovery
+from Scripts.tasks_and_delays_maker import *
 import time
 
 if __name__ == '__main__':
@@ -32,8 +33,8 @@ if __name__ == '__main__':
     obstacles = param['map']['obstacles']
     non_task_endpoints = param['map']['non_task_endpoints']
     agents = param['agents']
-    tasks = param['tasks']
-    delays = param['delays']
+    #tasks = param['tasks']
+    #delays = param['delays']
 
     # Simulate
     n_sim = 100
@@ -42,6 +43,13 @@ if __name__ == '__main__':
     start_time = time.time()
     for k in [0]:
         for i in range(n_sim):
+            tasks, delays = gen_tasks_and_delays(agents, param['start_locations'], param['goal_locations'],
+                                                 param['n_tasks'],
+                                                 param['task_freq'], param['n_delays_per_agent'])
+            param['tasks'] = tasks
+            param['delays'] = delays
+            with open(args.param + config['visual_postfix'], 'w') as param_file:
+                yaml.safe_dump(param, param_file)
             #simulation = Simulation(tasks, agents, delays=delays)
             #tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=k)
             simulation = SimulationNewRecovery(tasks, agents, delays=delays)
