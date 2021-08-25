@@ -46,6 +46,7 @@ class TokenPassingRecovery(object):
             print('p_iter should be > 0')
             exit(1)
         self.new_recovery = new_recovery
+        self.prob_exceeded = False
         self.init_token()
 
     def init_token(self):
@@ -175,6 +176,7 @@ class TokenPassingRecovery(object):
         if not self.pd:
             path = cbs.search()
         else:
+            self.prob_exceeded = False
             mk = MarkovChainsMaker(self.token['agents'], self.pd)
             for iter in range(self.p_iter):
                 path = cbs.search()
@@ -184,6 +186,7 @@ class TokenPassingRecovery(object):
                         tmp.append([el['x'], el['y']])
                     dic = mk.get_conflict_prob_given_path(tmp)
                     if dic['prob'] > self.p_max:
+                        self.prob_exceeded = True
                         print('Conflict probablility to high (', dic['prob'], ') replanning...')
                         path = None
                         moving_obstacles_agents[(dic['pos_max_conf'][0], dic['pos_max_conf'][1], -1)] = agent_name
@@ -364,7 +367,7 @@ class TokenPassingRecovery(object):
                 path_to_task_start = self.search(cbs, agent_name, moving_obstacles_agents)
                 if not path_to_task_start:
                     print("Solution not found to task start for agent", agent_name, " idling at current position...")
-                    if len(self.token['delayed_agents']) == 0:
+                    if len(self.token['delayed_agents']) == 0 and not self.prob_exceeded:
                         print('Instance is not well-formed or a_star_max_iter is too low for this environment.')
                         self.deadlock_recovery(agent_name, agent_pos, all_idle_agents, all_delayed_agents, 4)
                         #exit(1)
@@ -380,7 +383,7 @@ class TokenPassingRecovery(object):
                     path_to_task_goal = self.search(cbs, agent_name, moving_obstacles_agents)
                     if not path_to_task_goal:
                         print("Solution not found to task goal for agent", agent_name, " idling at current position...")
-                        if len(self.token['delayed_agents']) == 0:
+                        if len(self.token['delayed_agents']) == 0 and not self.prob_exceeded:
                             print('Instance is not well-formed  or a_star_max_iter is too low for this environment.')
                             self.deadlock_recovery(agent_name, agent_pos, all_idle_agents, all_delayed_agents, 4)
                             #exit(1)

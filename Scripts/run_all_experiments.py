@@ -36,9 +36,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_k'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = None
     args['p_iter'] = 5
@@ -82,9 +82,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_crowded_k'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = None
     args['p_iter'] = 5
@@ -128,9 +128,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_mid_k'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 2000
+    args['a_star_max_iter'] = 5000
     args['replan_every_k_delays'] = False
     args['pd'] = None
     args['p_iter'] = 5
@@ -174,9 +174,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_crowded_replan_every_k_delays'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = True
     args['pd'] = None
     args['p_iter'] = 5
@@ -220,9 +220,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_pd=0.1'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.1
     args['p_iter'] = 5
@@ -266,9 +266,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_crowded_pd=0.1'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.1
     args['p_iter'] = 5
@@ -312,9 +312,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_mid_pd=0.1'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 2000
+    args['a_star_max_iter'] = 5000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.1
     args['p_iter'] = 5
@@ -358,9 +358,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_pd=0.02'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.02
     args['p_iter'] = 5
@@ -404,9 +404,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_small_crowded_pd=0.02'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.02
     args['p_iter'] = 5
@@ -450,9 +450,9 @@ if __name__ == '__main__':
         except ValueError:
             json_file = {}
     args = {}
-    json_file[input] = args
+    json_file['warehouse_mid_pd=0.02'] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 2000
+    args['a_star_max_iter'] = 5000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.02
     args['p_iter'] = 5
