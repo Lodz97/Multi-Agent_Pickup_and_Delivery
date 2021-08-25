@@ -28,7 +28,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 500
+    n_sim = 200
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 500
+    n_sim = 200
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 500
+    n_sim = 200
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     args = {}
     json_file[input] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 2000
     args['replan_every_k_delays'] = False
     args['pd'] = None
     args['p_iter'] = 5
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 500
+    n_sim = 200
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -212,7 +212,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -304,7 +304,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -314,7 +314,7 @@ if __name__ == '__main__':
     args = {}
     json_file[input] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 2000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.1
     args['p_iter'] = 5
@@ -350,7 +350,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -396,7 +396,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -442,7 +442,7 @@ if __name__ == '__main__':
         except yaml.YAMLError as exc:
             print(exc)
     # Simulate
-    n_sim = 200
+    n_sim = 100
     with open(os.path.join(RoothPath.get_root(), output), 'r') as f:
         try:
             json_file = json.load(f)
@@ -452,7 +452,7 @@ if __name__ == '__main__':
     args = {}
     json_file[input] = args
     args['n_sim'] = n_sim
-    args['a_star_max_iter'] = 1000
+    args['a_star_max_iter'] = 2000
     args['replan_every_k_delays'] = False
     args['pd'] = 0.02
     args['p_iter'] = 5
