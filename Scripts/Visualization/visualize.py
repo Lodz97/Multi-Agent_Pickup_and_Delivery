@@ -197,7 +197,7 @@ if __name__ == "__main__":
     with open(args.schedule) as states_file:
         schedule = yaml.load(states_file, Loader=yaml.FullLoader)
 
-    animation = Animation(map, schedule, slow_factor=10)
+    animation = Animation(map, schedule, slow_factor=1)
 
     #animation.save('TP_k=1_collision.mp4', 1)
 

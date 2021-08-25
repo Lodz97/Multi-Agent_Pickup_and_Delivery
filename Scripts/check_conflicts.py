@@ -43,7 +43,7 @@ if __name__ == '__main__':
     start_time = time.time()
     for k in [0]:
         for i in range(n_sim):
-            tasks, delays = gen_tasks_and_delays(agents, param['start_locations'], param['goal_locations'],
+            tasks, delays = gen_tasks_and_delays(agents, param['map']['start_locations'], param['map']['goal_locations'],
                                                  param['n_tasks'],
                                                  param['task_freq'], param['n_delays_per_agent'])
             param['tasks'] = tasks

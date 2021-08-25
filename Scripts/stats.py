@@ -12,29 +12,45 @@ import matplotlib.pyplot as plt
 from Utils.pool_with_subprocess import PoolWithSubprocess
 import multiprocessing
 from functools import partial
+import time
 
 
-def run_sim(param, n_sim, k):
+def run_sim(param, n_sim, args, k_or_p_max):
+    a_star_max_iter = args['a_star_max_iter']
+    replan_every_k_delays = args['replan_every_k_delays']
+    pd = args['pd']
+    p_iter = args['p_iter']
+    new_recovery = args['new_recovery']
+    if pd is None:
+        k = k_or_p_max
+        p_max = None
+    else:
+        k = 0
+        p_max = k_or_p_max
+
     costs = []
     replans = []
+    sim_times = []
     dimensions = param['map']['dimensions']
     obstacles = param['map']['obstacles']
     non_task_endpoints = param['map']['non_task_endpoints']
     agents = param['agents']
     # Uncomment for fixed tasks and delays
-    #tasks = param['tasks']
-    #delays = param['delays']
+    # tasks = param['tasks']
+    # delays = param['delays']
     for i in range(n_sim):
-        tasks, delays = gen_tasks_and_delays(agents, param['start_locations'], param['goal_locations'],
+        tasks, delays = gen_tasks_and_delays(agents, param['map']['start_locations'], param['map']['goal_locations'],
                                              param['n_tasks'],
                                              param['task_freq'], param['n_delays_per_agent'])
         # simulation = Simulation(tasks, agents, delays=delays)
         # tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k)
         simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-        tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000,
-                                  k=k, new_recovery=True)
-        # tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation,
-        #                          a_star_max_iter=1000, k=0, p_max=k, pd=0.1, p_iter=5, new_recovery=True)
+        # tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000,
+        #                          k=k, new_recovery=True)
+        tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation,
+                                  a_star_max_iter=a_star_max_iter, k=k, replan_every_k_delays=replan_every_k_delays,
+                                  pd=pd, p_max=p_max, p_iter=p_iter, new_recovery=new_recovery)
+        start = time.time()
         while tp.get_completed_tasks() != len(tasks):
             simulation.time_forward(tp)
         cost = 0
@@ -42,12 +58,15 @@ def run_sim(param, n_sim, k):
             cost = cost + len(path)
         costs.append(cost)
         replans.append(tp.get_n_replans())
+        sim_times.append(time.time() - start)
     avg_cost = mean(costs)
     avg_n_replans = mean(replans)
+    avg_computation_time_per_sim = mean(sim_times)
     print('k:', k)
     print('Average cost:', avg_cost)
     print('Average number of replans:', avg_n_replans)
-    return [costs, replans]
+    print('Average computation time per simulation:', avg_computation_time_per_sim)
+    return [costs, replans, sim_times]
 
 
 if __name__ == '__main__':
@@ -70,23 +89,38 @@ if __name__ == '__main__':
             print(exc)
 
     # Simulate
-    n_sim = 100
-    k_list = [0, 1, 2, 3]
-    #k_list = [1, 0.5, 0.3, 0.2, 0.1, 0.02]
+    n_sim = 20
+    args = {}
+    args['a_star_max_iter'] = 1000
+    args['replan_every_k_delays'] = False
+    args['pd'] = 0.05
+    args['p_iter'] = 5
+    args['new_recovery'] = True
+    #k_list = [0, 1, 2, 3, 4, 5]
+    k_list = [1, 0.5, 0.25, 0.1, 0.05]
     costs_list = []
     replans_list = []
-    pool = PoolWithSubprocess(processes=multiprocessing.cpu_count() // 2, maxtasksperchild=1)
-    compute_sim_partial = partial(run_sim, param, n_sim)
+    sim_times_list = []
+    start = time.time()
+    pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
+    compute_sim_partial = partial(run_sim, param, n_sim, args)
     resultList = pool.map(compute_sim_partial, k_list)
     pool.close()
     pool.join()
     for el in resultList:
         costs_list.append(el[0])
         replans_list.append(el[1])
+        sim_times_list.append(el[2])
     plot1 = plt.figure(1)
     plt.boxplot(costs_list, positions=k_list)
+    plt.ylabel('Costs')
     plot2 = plt.figure(2)
     plt.boxplot(replans_list, positions=k_list)
+    plt.ylabel('Number of replans')
+    plot3 = plt.figure(3)
+    plt.boxplot(sim_times_list, positions=k_list)
+    plt.ylabel('Computation cost per simulation [s]')
     plt.show()
+    print(time.time() - start)
 
 

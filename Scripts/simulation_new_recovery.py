@@ -157,7 +157,7 @@ if __name__ == '__main__':
     #tasks = param['tasks']
     #delays = param['delays']
     # Generate random tasks and delays
-    tasks, delays = gen_tasks_and_delays(agents, param['start_locations'], param['goal_locations'], param['n_tasks'], param['task_freq'], param['n_delays_per_agent'])
+    tasks, delays = gen_tasks_and_delays(agents, param['map']['start_locations'], param['map']['goal_locations'], param['n_tasks'], param['task_freq'], param['n_delays_per_agent'])
     param['tasks'] = tasks
     param['delays'] = delays
     with open(args.param + config['visual_postfix'], 'w') as param_file:
