@@ -11,7 +11,7 @@ with open(os.path.join(RoothPath.get_root(), 'all_experiments_26_08_2021.json'),
         json_file = {}
 
     for name, dic in json_file.items():
-        plot1 = plt.figure(1)
+        plt.subplot(1, 3, 1)
         plt.title(name)
         if dic['list'][0] == 0:
             plt.boxplot(dic['costs_list'], positions=dic['list'])
@@ -21,7 +21,7 @@ with open(os.path.join(RoothPath.get_root(), 'all_experiments_26_08_2021.json'),
             plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
             plt.xlabel('p_max')
         plt.ylabel('Costs')
-        plot1 = plt.figure(2)
+        plt.subplot(1, 3, 2)
         plt.title(name)
         if dic['list'][0] == 0:
             plt.boxplot(dic['replans_list'], positions=dic['list'])
@@ -31,7 +31,7 @@ with open(os.path.join(RoothPath.get_root(), 'all_experiments_26_08_2021.json'),
             plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
             plt.xlabel('p_max')
         plt.ylabel('Number of replans')
-        plot1 = plt.figure(3)
+        plt.subplot(1, 3, 3)
         plt.title(name)
         if dic['list'][0] == 0:
             plt.boxplot(dic['sim_times_list'], positions=dic['list'])
