@@ -14,30 +14,30 @@ with open(os.path.join(RoothPath.get_root(), 'all_experiments_26_08_2021.json'),
         plt.subplot(1, 3, 1)
         plt.title(name)
         if dic['list'][0] == 0:
-            plt.boxplot(dic['costs_list'], positions=dic['list'])
+            plt.boxplot(dic['costs_list'], positions=dic['list'], showmeans=True)
             plt.xlabel('k')
         else:
-            plt.boxplot(dic['costs_list'])
+            plt.boxplot(dic['costs_list'], showmeans=True)
             plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
             plt.xlabel('p_max')
         plt.ylabel('Costs')
         plt.subplot(1, 3, 2)
         plt.title(name)
         if dic['list'][0] == 0:
-            plt.boxplot(dic['replans_list'], positions=dic['list'])
+            plt.boxplot(dic['replans_list'], positions=dic['list'], showmeans=True)
             plt.xlabel('k')
         else:
-            plt.boxplot(dic['replans_list'])
+            plt.boxplot(dic['replans_list'], showmeans=True)
             plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
             plt.xlabel('p_max')
         plt.ylabel('Number of replans')
         plt.subplot(1, 3, 3)
         plt.title(name)
         if dic['list'][0] == 0:
-            plt.boxplot(dic['sim_times_list'], positions=dic['list'])
+            plt.boxplot(dic['sim_times_list'], positions=dic['list'], showmeans=True)
             plt.xlabel('k')
         else:
-            plt.boxplot(dic['sim_times_list'])
+            plt.boxplot(dic['sim_times_list'], showmeans=True)
             plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
             plt.xlabel('p_max')
         plt.ylabel('Computation cost per simulation [s]')
