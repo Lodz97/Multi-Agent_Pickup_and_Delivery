@@ -165,8 +165,8 @@ if __name__ == '__main__':
 
     # Simulate
     simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=20000, k=0,
-                              replan_every_k_delays=False, pd=0.02, p_max=0.2, p_iter=1, new_recovery=True)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=4000, k=1,
+                              replan_every_k_delays=False, pd=None, p_max=None, p_iter=1, new_recovery=True)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 

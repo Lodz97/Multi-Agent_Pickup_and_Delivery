@@ -8620,5 +8620,5 @@ map:
   - - 38
     - 4
 n_delays_per_agent: 10
-n_tasks: 10
+n_tasks: 30
 task_freq: 1

@@ -138,11 +138,11 @@ if __name__ == '__main__':
             print(exc)
 
     # Simulate
-    n_sim = 1
+    n_sim = 20
     args = {}
-    args['a_star_max_iter'] = 20000
+    args['a_star_max_iter'] = 3000
     args['replan_every_k_delays'] = False
-    args['pd'] = 0.05
+    args['pd'] = 0.1
     args['p_iter'] = 1
     args['new_recovery'] = True
     #var_list = [0, 1, 2, 3, 4, 5]

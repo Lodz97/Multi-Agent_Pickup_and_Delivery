@@ -3,9 +3,11 @@ AStar search
 author: Ashwin Bose (@atb033)
 author: Giacomo Lodigiani (@Lodz97)
 """
+import heapq
+from itertools import count
 
 
-class AStar():
+class AStar:
     def __init__(self, env):
         self.agent_dict = env.agent_dict
         self.admissible_heuristic = env.admissible_heuristic
@@ -37,15 +39,20 @@ class AStar():
         g_score[initial_state] = 0
 
         f_score = {}
+        h_score = self.admissible_heuristic(initial_state, agent_name)
+        f_score[initial_state] = h_score
 
-        f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
+        heap = []
+        index = count(0)
+        heapq.heappush(heap, (f_score[initial_state], h_score, next(index), initial_state))
 
         while open_set and (self.max_iter == -1 or self.iter < self.max_iter):
             self.iter = self.iter + 1
             if self.iter == self.max_iter:
                 print('Low level A* - Maximum iteration reached')
-            temp_dict = {open_item: f_score.setdefault(open_item, float("inf")) for open_item in open_set}
-            current = min(temp_dict, key=temp_dict.get)
+            #temp_dict = {open_item: f_score.setdefault(open_item, float("inf")) for open_item in open_set}
+            #current = min(temp_dict, key=temp_dict.get)
+            current = heapq.heappop(heap)[3]
 
             if self.is_at_goal(current, agent_name):
                 return self.reconstruct_path(came_from, current)
@@ -69,5 +76,7 @@ class AStar():
                 came_from[neighbor] = current
 
                 g_score[neighbor] = tentative_g_score
-                f_score[neighbor] = g_score[neighbor] + self.admissible_heuristic(neighbor, agent_name)
+                h_score = self.admissible_heuristic(neighbor, agent_name)
+                f_score[neighbor] = g_score[neighbor] + h_score
+                heapq.heappush(heap, (f_score[neighbor], h_score, next(index), neighbor))
         return False
