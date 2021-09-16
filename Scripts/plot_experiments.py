@@ -3,7 +3,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 
-with open(os.path.join(RoothPath.get_root(), 'all_experiments_26_08_2021.json'), 'r') as f:
+with open(os.path.join(RoothPath.get_root(), 'Experiments/all_experiments_26_08_2021.json'), 'r') as f:
     try:
         json_file = json.load(f)
     # If the file is empty the ValueError will be thrown

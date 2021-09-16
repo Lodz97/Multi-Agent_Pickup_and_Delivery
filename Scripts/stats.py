@@ -25,6 +25,7 @@ def run_sim(param, n_sim, args, k_or_p_max):
     replan_every_k_delays = args['replan_every_k_delays']
     pd = args['pd']
     p_iter = args['p_iter']
+    freq = args.get('task_freq', None)
     new_recovery = args['new_recovery']
     if pd is None:
         k = k_or_p_max
@@ -32,21 +33,25 @@ def run_sim(param, n_sim, args, k_or_p_max):
     else:
         k = 0
         p_max = k_or_p_max
+    if freq is None:
+        freq = param['task_freq']
 
     costs = []
     replans = []
     sim_times = []
+    algo_times = []
     dimensions = param['map']['dimensions']
     obstacles = param['map']['obstacles']
     non_task_endpoints = param['map']['non_task_endpoints']
     agents = param['agents']
+    delay_interval = None
     # Uncomment for fixed tasks and delays
     # tasks = param['tasks']
     # delays = param['delays']
-    for i in range(n_sim):
+    for i in range(n_sim + 4):
+        print('############# k:', k, 'n_sim:', i)
         tasks, delays = gen_tasks_and_delays(agents, param['map']['start_locations'], param['map']['goal_locations'],
-                                             param['n_tasks'],
-                                             param['task_freq'], param['n_delays_per_agent'])
+                                             param['n_tasks'], freq, param['n_delays_per_agent'], delay_interval)
         # simulation = Simulation(tasks, agents, delays=delays)
         # tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=2000, k=k)
         simulation = SimulationNewRecovery(tasks, agents, delays=delays)
@@ -61,17 +66,25 @@ def run_sim(param, n_sim, args, k_or_p_max):
         cost = 0
         for path in simulation.actual_paths.values():
             cost = cost + len(path)
-        costs.append(cost)
-        replans.append(tp.get_n_replans())
-        sim_times.append(time.time() - start)
+        if i == 11110:
+            delay_interval = cost
+        elif i < -4:
+            delay_interval = max(cost, delay_interval)
+        else:
+            costs.append(cost)
+            replans.append(tp.get_n_replans())
+            sim_times.append(time.time() - start)
+            algo_times.append(simulation.get_algo_time())
     avg_cost = mean(costs)
     avg_n_replans = mean(replans)
     avg_computation_time_per_sim = mean(sim_times)
+    avg_algo_time_per_sim = mean(algo_times)
     print('k:', k)
     print('Average cost:', avg_cost)
     print('Average number of replans:', avg_n_replans)
     print('Average computation time per simulation:', avg_computation_time_per_sim)
-    return [costs, replans, sim_times]
+    print('Average computation time per algorithm execution:', avg_algo_time_per_sim)
+    return [costs, replans, sim_times, algo_times]
 
 def run_sim_parall(param, args, k_or_p_max, n_single_sim):
     a_star_max_iter = args['a_star_max_iter']
@@ -109,6 +122,9 @@ def run_sim_parall(param, args, k_or_p_max, n_single_sim):
     start = time.time()
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
+        # Avoid problems in long experiments, with proper parameters not needed
+        if simulation.get_time() > 1000:
+            break
     cost = 0
     for path in simulation.actual_paths.values():
         cost = cost + len(path)
@@ -138,18 +154,20 @@ if __name__ == '__main__':
             print(exc)
 
     # Simulate
-    n_sim = 20
+    n_sim = 5
     args = {}
-    args['a_star_max_iter'] = 3000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
-    args['pd'] = 0.1
+    args['pd'] = None
     args['p_iter'] = 1
     args['new_recovery'] = True
-    #var_list = [0, 1, 2, 3, 4, 5]
-    var_list = [1, 0.5, 0.25, 0.1, 0.05]
+    args['task_freq'] = 1
+    var_list = [0, 1, 2, 3, 4]
+    #var_list = [1, 0.5, 0.25, 0.1, 0.05]
     costs_list = []
     replans_list = []
     sim_times_list = []
+    algo_times_list = []
     start = time.time()
     pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
     compute_sim_partial = partial(run_sim, param, n_sim, args)
@@ -160,17 +178,21 @@ if __name__ == '__main__':
         costs_list.append(el[0])
         replans_list.append(el[1])
         sim_times_list.append(el[2])
+        algo_times_list.append(el[3])
     print(time.time() - start)
 
     plot1 = plt.figure(1)
-    plt.boxplot(costs_list, positions=var_list)
+    plt.boxplot(costs_list, positions=var_list, showmeans=True)
     plt.ylabel('Costs')
     plot2 = plt.figure(2)
-    plt.boxplot(replans_list, positions=var_list)
+    plt.boxplot(replans_list, positions=var_list, showmeans=True)
     plt.ylabel('Number of replans')
     plot3 = plt.figure(3)
-    plt.boxplot(sim_times_list, positions=var_list)
+    plt.boxplot(sim_times_list, positions=var_list, showmeans=True)
     plt.ylabel('Computation cost per simulation [s]')
+    plot4 = plt.figure(4)
+    plt.boxplot(algo_times_list, positions=var_list, showmeans=True)
+    plt.ylabel('Computation cost per algorithm execution [s]')
     plt.show()
 
 

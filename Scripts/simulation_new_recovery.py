@@ -2,6 +2,7 @@ import argparse
 import yaml
 import json
 import os
+import time
 from collections import defaultdict
 from Scripts.TP_with_recovery import TokenPassingRecovery
 import RoothPath
@@ -25,6 +26,7 @@ class SimulationNewRecovery(object):
         self.actual_paths = {}
         self.times_agent_delayed = defaultdict(lambda: 0)
         self.delays_now = 0
+        self.algo_time = 0
         self.initialize_simulation()
 
     def initialize_simulation(self):
@@ -46,7 +48,9 @@ class SimulationNewRecovery(object):
         self.time = self.time + 1
         print('Time:', self.time)
         self.delays_now = self.delay_times.count(self.time)
+        start_time = time.time()
         algorithm.time_forward()
+        self.algo_time += time.time() - start_time
         self.delayed_agents = set()
         self.agents_pos_now = set()
         self.agents_moved = set()
@@ -115,6 +119,9 @@ class SimulationNewRecovery(object):
 
     def get_time(self):
         return self.time
+
+    def get_algo_time(self):
+        return self.algo_time
 
     def get_actual_paths(self):
         return self.actual_paths
