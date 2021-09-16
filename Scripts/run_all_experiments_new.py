@@ -39,7 +39,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_k_freq=0.5'] = args
+        json_file['warehouse_small_k_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -88,7 +88,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_crowded_k_freq=0.5'] = args
+        json_file['warehouse_small_crowded_k_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -137,7 +137,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_k_freq=0.5'] = args
+        json_file['warehouse_mid_k_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -186,7 +186,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_crowded_k_freq=0.5'] = args
+        json_file['warehouse_mid_crowded_k_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -235,7 +235,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_pd=0.1_freq=0.5'] = args
+        json_file['warehouse_small_pd=0.1_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -284,7 +284,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_crowded_pd=0.1_freq=0.5'] = args
+        json_file['warehouse_small_crowded_pd=0.1_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -333,7 +333,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_pd=0.1_freq=0.5'] = args
+        json_file['warehouse_mid_pd=0.1_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -382,7 +382,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_crowded_pd=0.1_freq=0.5'] = args
+        json_file['warehouse_mid_crowded_pd=0.1_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -431,7 +431,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_pd=0.02_freq=0.5'] = args
+        json_file['warehouse_small_pd=0.02_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -480,7 +480,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_small_crowded_pd=0.02_freq=0.5'] = args
+        json_file['warehouse_small_crowded_pd=0.02_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -529,7 +529,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_pd=0.02_freq=0.5'] = args
+        json_file['warehouse_mid_pd=0.02_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
@@ -578,7 +578,7 @@ if __name__ == '__main__':
             except ValueError:
                 json_file = {}
         args = {}
-        json_file['warehouse_mid_crowded_pd=0.02_freq=0.5'] = args
+        json_file['warehouse_mid_crowded_pd=0.02_freq=' + str(freq)] = args
         args['n_sim'] = n_sim
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
