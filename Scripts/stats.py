@@ -63,13 +63,17 @@ def run_sim(param, n_sim, args, k_or_p_max):
         start = time.time()
         while tp.get_completed_tasks() != len(tasks):
             simulation.time_forward(tp)
+            # Avoid problems in long experiments, with proper parameters not needed
+            if simulation.get_time() > 1000:
+                break
         cost = 0
         for path in simulation.actual_paths.values():
             cost = cost + len(path)
-        if i == 11110:
-            delay_interval = cost
-        elif i < -4:
-            delay_interval = max(cost, delay_interval)
+        # Use first simulations to calibrate interval on which delays are distributed
+        if i == 0:
+            delay_interval = simulation.get_time()
+        elif i < 4:
+            delay_interval = max(simulation.get_time(), delay_interval)
         else:
             costs.append(cost)
             replans.append(tp.get_n_replans())
