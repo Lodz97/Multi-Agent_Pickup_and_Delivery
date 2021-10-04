@@ -160,7 +160,7 @@ if __name__ == '__main__':
     # Simulate
     n_sim = 5
     args = {}
-    args['a_star_max_iter'] = 4000
+    args['a_star_max_iter'] = 6000
     args['replan_every_k_delays'] = False
     args['pd'] = None
     args['p_iter'] = 1

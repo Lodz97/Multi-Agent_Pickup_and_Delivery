@@ -1,5 +1,5 @@
 {
     "input_path": "Test_MAPD",
-    "input_name": "input_warehouse_mid_crowded_random.yaml",
+    "input_name": "input_warehouse_big_random.yaml",
     "visual_postfix": "_tmp"
 }
