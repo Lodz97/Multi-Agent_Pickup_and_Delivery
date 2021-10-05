@@ -3,6 +3,7 @@ import yaml
 import json
 import os
 import time
+import random
 from collections import defaultdict
 from Scripts.TP_with_recovery import TokenPassingRecovery
 import RoothPath
@@ -138,6 +139,7 @@ class SimulationNewRecovery(object):
 
 
 if __name__ == '__main__':
+    random.seed(1234)
     parser = argparse.ArgumentParser()
     parser.add_argument('-param', help='Input file containing map and obstacles')
     parser.add_argument('-output', help='Output file with the schedule')
@@ -172,8 +174,8 @@ if __name__ == '__main__':
 
     # Simulate
     simulation = SimulationNewRecovery(tasks, agents, delays=delays)
-    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=4000, k=1,
-                              replan_every_k_delays=False, pd=None, p_max=None, p_iter=1, new_recovery=True)
+    tp = TokenPassingRecovery(agents, dimensions, obstacles, non_task_endpoints, simulation, a_star_max_iter=4000, k=0,
+                              replan_every_k_delays=False, pd=0.1, p_max=1, p_iter=1, new_recovery=True)
     while tp.get_completed_tasks() != len(tasks):
         simulation.time_forward(tp)
 

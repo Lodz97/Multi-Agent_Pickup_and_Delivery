@@ -23,6 +23,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 1
+        random.seed(1234)
         name = 'input_warehouse_small_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -72,6 +73,7 @@ if __name__ == '__main__':
         ####################################
         # Read from input file
         # 2
+        random.seed(1234)
         name = 'input_warehouse_small_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -121,6 +123,7 @@ if __name__ == '__main__':
         ####################################
         # Read from input file
         # 3
+        random.seed(1234)
         name = 'input_warehouse_mid_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -170,6 +173,7 @@ if __name__ == '__main__':
         ####################################
         # Read from input file
         # 4
+        random.seed(1234)
         name = 'input_warehouse_mid_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -219,6 +223,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 5
+        random.seed(1234)
         name = 'input_warehouse_small_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -268,6 +273,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 6
+        random.seed(1234)
         name = 'input_warehouse_small_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -317,6 +323,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 7
+        random.seed(1234)
         name = 'input_warehouse_mid_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -366,6 +373,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 8
+        random.seed(1234)
         name = 'input_warehouse_mid_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -415,6 +423,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 9
+        random.seed(1234)
         name = 'input_warehouse_small_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -464,6 +473,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 10
+        random.seed(1234)
         name = 'input_warehouse_small_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -513,6 +523,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 11
+        random.seed(1234)
         name = 'input_warehouse_mid_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
@@ -562,6 +573,7 @@ if __name__ == '__main__':
         #####################################
         # Read from input file
         # 12
+        random.seed(1234)
         name = 'input_warehouse_mid_crowded_random.yaml'
         input = os.path.join(env_folder, name)
         with open(input, 'r') as param_file:
