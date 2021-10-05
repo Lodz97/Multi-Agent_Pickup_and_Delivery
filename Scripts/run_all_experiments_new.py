@@ -14,7 +14,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
     env_folder = os.path.join(RoothPath.get_root(), os.path.join(config['input_path']))
-    output = 'experiments_new_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json'
+    output = 'experiments_new2_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json'
     with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
         json.dump({}, f)
     random.seed(1234)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
         args['n_delays_per_agent'] = param['n_delays_per_agent']
-        var_list = [0, 1, 2, 3, 4, 5]
+        var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
         replans_list = []
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
         args['n_delays_per_agent'] = param['n_delays_per_agent']
-        var_list = [0, 1, 2, 3, 4, 5]
+        var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
         replans_list = []
@@ -150,7 +150,7 @@ if __name__ == '__main__':
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
         args['n_delays_per_agent'] = param['n_delays_per_agent']
-        var_list = [0, 1, 2, 3, 4, 5]
+        var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
         replans_list = []

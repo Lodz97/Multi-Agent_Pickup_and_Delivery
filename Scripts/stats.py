@@ -14,6 +14,7 @@ import multiprocessing
 from functools import partial
 import time
 import sys
+import random
 
 
 def mute():
@@ -21,6 +22,7 @@ def mute():
 
 
 def run_sim(param, n_sim, args, k_or_p_max):
+    random.seed(1234)
     a_star_max_iter = args['a_star_max_iter']
     replan_every_k_delays = args['replan_every_k_delays']
     pd = args['pd']

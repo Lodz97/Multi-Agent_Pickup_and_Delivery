@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-with open(os.path.join(RoothPath.get_root(), 'experiments_new_final.json'), 'r') as f:
+with open(os.path.join(RoothPath.get_root(), 'experiments_new2_05_10_2021_16_00_42.json'), 'r') as f:
     try:
         json_file = json.load(f)
     # If the file is empty the ValueError will be thrown
@@ -13,7 +13,7 @@ with open(os.path.join(RoothPath.get_root(), 'experiments_new_final.json'), 'r')
 
     for name, dic in json_file.items():
         p_list = [1, 0.5, 0.25, 0.1, 0.05]
-        if 'crowded' not in name or 'freq=1' not in name:
+        if 'crowded' not in name or 'freq=0.5' not in name:
             continue
         print('#' * 10, name)
         c = [np.mean(x) for x in json_file[name.replace('_crowded', '')]['costs_list']][0:5] + [np.mean(x) for x in dic['costs_list']][0:5]
