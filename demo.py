@@ -10,8 +10,6 @@ import subprocess
 import sys
 
 
-
-
 if __name__ == '__main__':
     random.seed(1234)
     parser = argparse.ArgumentParser()

@@ -1,5 +1,6 @@
 {
     "input_path": "Environments",
     "input_name": "input_warehouse_mid_random.yaml",
-    "visual_postfix": "_tmp"
+    "visual_postfix": "_tmp",
+    "experiments_path": "Experiments"
 }

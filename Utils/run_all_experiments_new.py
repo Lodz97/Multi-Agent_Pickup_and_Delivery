@@ -14,7 +14,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
     env_folder = os.path.join(RoothPath.get_root(), os.path.join(config['input_path']))
-    output = 'experiments_new2_new_markov_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json'
+    output = os.path.join(config['experiments_path'], 'experiments_new2_new_markov_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json')
     with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
         json.dump({}, f)
     random.seed(1234)
