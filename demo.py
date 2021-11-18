@@ -71,5 +71,5 @@ if __name__ == '__main__':
     with open(args.output, 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)
 
-    create = [sys.executable, '-m', 'Simulation.Visualization.visualize', '-slow_factor', str(args.slow_factor)]
+    create = [sys.executable, '-m', 'Utils.Visualization.visualize', '-slow_factor', str(args.slow_factor)]
     subprocess.call(create)
