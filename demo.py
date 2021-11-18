@@ -20,17 +20,13 @@ if __name__ == '__main__':
     parser.add_argument('-pd', help='Probability of an agento of being delayed at any time step (p-TP)', default=0.02, type=float)
     parser.add_argument('-p_iter', help='Number of allowed replans if a path exceeds probability thereshold (p-TP)', default=1, type=int)
     parser.add_argument('-a_star_max_iter', help='Maximum number of states explored by the low-level algorithm', default=5000, type=int)
-    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=5, type=int)
+    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=2, type=int)
     args = parser.parse_args()
 
-    if args.k is not None and args.p is not None:
-        print('You cannot set both k and p!')
-        exit(-1)
-    if args.k is None and args.p is None:
-        print('You have to set k or p!')
-        exit(-1)
     if args.k is None:
         args.k = 0
+    if args.p is None:
+        args.p = 1
 
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)

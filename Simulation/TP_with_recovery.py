@@ -10,8 +10,8 @@ from collections import defaultdict
 
 
 class TokenPassingRecovery(object):
-    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=1000, k=1,
-                 replan_every_k_delays=False, pd=None, p_max=None, p_iter=1, new_recovery=False):
+    def __init__(self, agents, dimesions, obstacles, non_task_endpoints, simulation, a_star_max_iter=4000, k=0,
+                 replan_every_k_delays=False, pd=None, p_max=1, p_iter=1, new_recovery=False):
         self.agents = agents
         self.dimensions = dimesions
         self.obstacles = set(obstacles)
@@ -24,19 +24,22 @@ class TokenPassingRecovery(object):
         self.simulation = simulation
         self.a_star_max_iter = a_star_max_iter
         self.k = k
-        if k < 0:
+        self.p_max = p_max
+        if self.k != 0 and self.p_max != 1:
+            print('Use of k and p robustness at same time not allowed.')
+            exit(-1)
+        if self.k < 0:
             print('k should be >= 0')
             exit(1)
-        if k == 0 and not new_recovery:
+        if self.k == 0 and not new_recovery:
             print('k = 0 not supported for this recovery type')
             exit(1)
         self.replan_every_k_delays = replan_every_k_delays
         if k == 0 and replan_every_k_delays:
             print('If k = 0 replan_every_k_delays must be False. Setting to False...')
             self.replan_every_k_delays = False
-        if k == 0:
-            self.p_max = p_max
-            if p_max and (p_max < 0 or p_max > 1):
+        if self.k == 0:
+            if (p_max < 0 or p_max > 1):
                 print('Max conflict probability must be between 0 and 1')
                 exit(1)
             self.pd = pd
