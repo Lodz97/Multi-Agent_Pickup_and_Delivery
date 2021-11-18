@@ -160,16 +160,16 @@ if __name__ == '__main__':
             print(exc)
 
     # Simulate
-    n_sim = 5
+    n_sim = 10
     args = {}
-    args['a_star_max_iter'] = 6000
+    args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
-    args['pd'] = None
+    args['pd'] = 0.1
     args['p_iter'] = 1
     args['new_recovery'] = True
     args['task_freq'] = 1
-    var_list = [0, 1, 2, 3, 4]
-    #var_list = [1, 0.5, 0.25, 0.1, 0.05]
+    #var_list = [0, 1, 2, 3, 4]
+    var_list = [1, 0.5, 0.25, 0.1, 0.05]
     costs_list = []
     replans_list = []
     sim_times_list = []

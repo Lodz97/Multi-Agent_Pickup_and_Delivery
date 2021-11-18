@@ -14,7 +14,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
     env_folder = os.path.join(RoothPath.get_root(), os.path.join(config['input_path']))
-    output = 'experiments_new2_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json'
+    output = 'experiments_new2_new_markov_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json'
     with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
         json.dump({}, f)
     random.seed(1234)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
         args['pd'] = None
-        args['p_iter'] = 5
+        args['p_iter'] = 1
         args['new_recovery'] = True
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
         args['pd'] = None
-        args['p_iter'] = 5
+        args['p_iter'] = 1
         args['new_recovery'] = True
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
         args['pd'] = None
-        args['p_iter'] = 5
+        args['p_iter'] = 1
         args['new_recovery'] = True
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         args['a_star_max_iter'] = 4000
         args['replan_every_k_delays'] = False
         args['pd'] = None
-        args['p_iter'] = 5
+        args['p_iter'] = 1
         args['new_recovery'] = True
         args['n_tasks'] = param['n_tasks']
         args['task_freq'] = freq

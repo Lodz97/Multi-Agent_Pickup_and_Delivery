@@ -2,6 +2,7 @@ import RoothPath
 import os
 import re
 import yaml
+import json
 
 if __name__ == '__main__':
     yaml_dic = {}
@@ -23,5 +24,7 @@ if __name__ == '__main__':
                 if line[j] == '@' or line[j] == 'T':
                     yaml_dic['map']['obstacles'].append((j, i))
 
-    with open(os.path.join(os.path.join(RoothPath.get_root(), 'Test_MAPD'), 'dragon_age_map.yaml'), 'w') as param_file:
+    with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
+        config = json.load(json_file)
+    with open(os.path.join(os.path.join(RoothPath.get_root(), config['input_path']), 'dragon_age_map.yaml'), 'w') as param_file:
         yaml.dump(yaml_dic, param_file)

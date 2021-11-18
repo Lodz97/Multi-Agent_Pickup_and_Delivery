@@ -180,6 +180,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-map", help="input file containing map")
     parser.add_argument("-schedule", help="schedule for agents")
+    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=1, type=int)
     parser.add_argument('--video', dest='video', default=None,
                         help="output video file (or leave empty to show on screen)")
     parser.add_argument("--speed", type=int, default=1, help="speedup-factor")
@@ -189,7 +190,7 @@ if __name__ == "__main__":
         with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
             config = json.load(json_file)
         args.map = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name'] + config['visual_postfix'],))
-        args.schedule = '../output.yaml'
+        args.schedule = os.path.join(RoothPath.get_root(), 'Scripts/output.yaml')
 
     with open(args.map) as map_file:
         map = yaml.load(map_file, Loader=yaml.FullLoader)
@@ -197,7 +198,7 @@ if __name__ == "__main__":
     with open(args.schedule) as states_file:
         schedule = yaml.load(states_file, Loader=yaml.FullLoader)
 
-    animation = Animation(map, schedule, slow_factor=1)
+    animation = Animation(map, schedule, slow_factor=args.slow_factor)
 
     #animation.save('TP_k=1_collision.mp4', 1)
 

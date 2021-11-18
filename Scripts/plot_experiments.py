@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-with open(os.path.join(RoothPath.get_root(), 'experiments_new2_05_10_2021_16_00_42.json'), 'r') as f:
+with open(os.path.join(RoothPath.get_root(), 'experiments_new2_big_07_10_2021_00_42_53.json'), 'r') as f:
     try:
         json_file = json.load(f)
     # If the file is empty the ValueError will be thrown
@@ -13,17 +13,17 @@ with open(os.path.join(RoothPath.get_root(), 'experiments_new2_05_10_2021_16_00_
 
     for name, dic in json_file.items():
         p_list = [1, 0.5, 0.25, 0.1, 0.05]
-        if 'crowded' not in name or 'freq=0.5' not in name:
-            continue
+#        if 'crowded' not in name or 'freq=1' not in name:
+#            continue
         print('#' * 10, name)
-        c = [np.mean(x) for x in json_file[name.replace('_crowded', '')]['costs_list']][0:5] + [np.mean(x) for x in dic['costs_list']][0:5]
-        r = [np.mean(x) for x in json_file[name.replace('_crowded', '')]['replans_list']][0:5] + [np.mean(x) for x in dic['replans_list']][0:5]
-        s = [round(np.mean(x), 2) for x in json_file[name.replace('_crowded', '')]['sim_times_list']][0:5] + [round(np.mean(x), 2) for x in dic['sim_times_list']][0:5]
+        c = [round(np.std(x), 2) for x in json_file[name.replace('_crowded', '')]['costs_list']][0:5] + [round(np.std(x), 2) for x in dic['costs_list']][0:5]
+        r = [round(np.std(x), 2) for x in json_file[name.replace('_crowded', '')]['replans_list']][0:5] + [round(np.std(x), 2) for x in dic['replans_list']][0:5]
+        s = [round(np.std(x), 2) for x in json_file[name.replace('_crowded', '')]['sim_times_list']][0:5] + [round(np.std(x), 2) for x in dic['sim_times_list']][0:5]
         for i in range(5):
             if 'pd' not in name:
-                print('&', i, '&', c[i], '&', r[i], '&', s[i], '&', c[i+len(c)//2], '&', r[i+len(c)//2], '&', s[i+len(c)//2], '\\\\\cline{2-8}')
+                print('&', i, '&', c[i], '&', r[i], '&', s[i], '\\\\\cline{2-8}')
             else:
-                print('&', p_list[i], '&', c[i], '&', r[i], '&', s[i], '&', c[i + len(c) // 2], '&', r[i + len(c) // 2], '&', s[i + len(c) // 2], '\\\\\cline{2-8}')
+                print('&', p_list[i], '&', c[i], '&', r[i], '&', s[i], '\\\\\cline{2-8}')
 
     for name, dic in json_file.items():
         plt.subplot(1, 3, 1)

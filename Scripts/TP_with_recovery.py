@@ -34,18 +34,23 @@ class TokenPassingRecovery(object):
         if k == 0 and replan_every_k_delays:
             print('If k = 0 replan_every_k_delays must be False. Setting to False...')
             self.replan_every_k_delays = False
-        self.p_max = p_max
-        if p_max and (p_max < 0 or p_max > 1):
-            print('Max conflict probability must be between 0 and 1')
-            exit(1)
-        self.pd = pd
-        if pd and (pd < 0 or pd > 1):
-            print('Probability of delay must be between 0 and 1')
-            exit(1)
-        self.p_iter = p_iter
-        if p_iter <= 0:
-            print('p_iter should be > 0')
-            exit(1)
+        if k == 0:
+            self.p_max = p_max
+            if p_max and (p_max < 0 or p_max > 1):
+                print('Max conflict probability must be between 0 and 1')
+                exit(1)
+            self.pd = pd
+            if pd and (pd < 0 or pd > 1):
+                print('Probability of delay must be between 0 and 1')
+                exit(1)
+            self.p_iter = p_iter
+            if p_iter <= 0:
+                print('p_iter should be > 0')
+                exit(1)
+        else:
+            self.p_max = None
+            self.pd = None
+            self.p_iter = None
         self.new_recovery = new_recovery
         self.init_token()
 
