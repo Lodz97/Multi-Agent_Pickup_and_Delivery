@@ -6,7 +6,6 @@ from Simulation.TP_with_recovery import TokenPassingRecovery
 import RoothPath
 from Simulation.tasks_and_delays_maker import *
 from Simulation.simulation_new_recovery import SimulationNewRecovery
-from Simulation.Visualization.visualize import Animation
 import subprocess
 import sys
 
