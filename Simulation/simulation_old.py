@@ -3,7 +3,7 @@ import argparse
 import yaml
 import json
 import os
-from Scripts.TP_with_recovery import TokenPassingRecovery
+from Simulation.TP_with_recovery import TokenPassingRecovery
 import RoothPath
 
 
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
             config = json.load(json_file)
         args.param = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name']))
-        args.output = 'output.yaml'
+        args.output = os.path.join(RoothPath.get_root(), 'output.yaml')
 
     # Read from input file
     with open(args.param, 'r') as param_file:

@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-with open(os.path.join(RoothPath.get_root(), 'experiments_new2_big_07_10_2021_00_42_53.json'), 'r') as f:
+with open(os.path.join(RoothPath.get_root(), 'Experiments/experiments_new2_big_07_10_2021_00_42_53.json'), 'r') as f:
     try:
         json_file = json.load(f)
     # If the file is empty the ValueError will be thrown

@@ -11,7 +11,7 @@ from math import fabs
 from itertools import combinations
 from copy import deepcopy
 
-from Scripts.CBS.a_star import AStar
+from Simulation.CBS.a_star import AStar
 
 class Location(object):
     def __init__(self, x=-1, y=-1):

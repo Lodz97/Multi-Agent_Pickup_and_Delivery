@@ -3,7 +3,7 @@ import RoothPath
 import yaml
 import json
 import random
-from Scripts.stats import run_sim
+from Utils.stats import run_sim
 from Utils.pool_with_subprocess import PoolWithSubprocess
 import multiprocessing
 from functools import partial

@@ -4,8 +4,8 @@ author: Giacomo Lodigiani (@Lodz97)
 """
 from math import fabs
 import random
-from Scripts.CBS.cbs import CBS, Environment
-from Scripts.markov_chains import MarkovChainsMaker
+from Simulation.CBS.cbs import CBS, Environment
+from Simulation.markov_chains import MarkovChainsMaker
 from collections import defaultdict
 
 

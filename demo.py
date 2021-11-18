@@ -2,11 +2,11 @@ import argparse
 import yaml
 import json
 import os
-from Scripts.TP_with_recovery import TokenPassingRecovery
+from Simulation.TP_with_recovery import TokenPassingRecovery
 import RoothPath
-from Scripts.tasks_and_delays_maker import *
-from Scripts.simulation_new_recovery import SimulationNewRecovery
-from Scripts.Visualization.visualize import Animation
+from Simulation.tasks_and_delays_maker import *
+from Simulation.simulation_new_recovery import SimulationNewRecovery
+from Simulation.Visualization.visualize import Animation
 import subprocess
 import sys
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
     args.param = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name']))
-    args.output = 'output.yaml'
+    args.output = os.path.join(RoothPath.get_root(), 'output.yaml')
 
     # Read from input file
     with open(args.param, 'r') as param_file:
@@ -72,5 +72,5 @@ if __name__ == '__main__':
     with open(args.output, 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)
 
-    create = [sys.executable, '-m', 'Scripts.Visualization.visualize', '-slow_factor', str(args.slow_factor)]
+    create = [sys.executable, '-m', 'Simulation.Visualization.visualize', '-slow_factor', str(args.slow_factor)]
     subprocess.call(create)

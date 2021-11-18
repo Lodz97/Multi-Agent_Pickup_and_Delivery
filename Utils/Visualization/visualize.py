@@ -190,7 +190,7 @@ if __name__ == "__main__":
         with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
             config = json.load(json_file)
         args.map = os.path.join(RoothPath.get_root(), os.path.join(config['input_path'], config['input_name'] + config['visual_postfix'],))
-        args.schedule = os.path.join(RoothPath.get_root(), 'Scripts/output.yaml')
+        args.schedule = os.path.join(RoothPath.get_root(), 'output.yaml')
 
     with open(args.map) as map_file:
         map = yaml.load(map_file, Loader=yaml.FullLoader)
