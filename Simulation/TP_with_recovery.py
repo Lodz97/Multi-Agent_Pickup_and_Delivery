@@ -29,31 +29,34 @@ class TokenPassingRecovery(object):
             print('Use of k and p robustness at same time not allowed.')
             exit(-1)
         if self.k < 0:
-            print('k should be >= 0')
+            print('k should be >= 0.')
             exit(1)
         if self.k == 0 and not new_recovery:
-            print('k = 0 not supported for this recovery type')
+            print('k = 0 not supported for this recovery type.')
             exit(1)
         self.replan_every_k_delays = replan_every_k_delays
         if k == 0 and replan_every_k_delays:
             print('If k = 0 replan_every_k_delays must be False. Setting to False...')
             self.replan_every_k_delays = False
         if self.k == 0:
-            if (p_max < 0 or p_max > 1):
-                print('Max conflict probability must be between 0 and 1')
+            if (self.p_max < 0 or self.p_max > 1):
+                print('Max conflict probability must be between 0 and 1.')
                 exit(1)
             self.pd = pd
-            if pd and (pd < 0 or pd > 1):
-                print('Probability of delay must be between 0 and 1')
+            if self.p_max != 1 and not self.pd:
+                print('To use p robustness need to set pd.')
+                exit(1)
+            if self.pd and (pd < 0 or pd > 1):
+                print('Probability of delay must be between 0 and 1.')
                 exit(1)
             self.p_iter = p_iter
-            if p_iter <= 0:
-                print('p_iter should be > 0')
+            if self.p_iter <= 0:
+                print('p_iter should be > 0.')
                 exit(1)
         else:
-            self.p_max = None
+            self.p_max = 1
             self.pd = None
-            self.p_iter = None
+            self.p_iter = 1
         self.new_recovery = new_recovery
         self.init_token()
 
@@ -190,7 +193,7 @@ class TokenPassingRecovery(object):
 
     def search(self, cbs, agent_name, moving_obstacles_agents):
         path = None
-        if not self.pd:
+        if self.p_max == 1:
             path = cbs.search()
         else:
             self.token['prob_exceeded'] = False

@@ -30,7 +30,7 @@ def run_sim(param, n_sim, args, k_or_p_max):
     new_recovery = args['new_recovery']
     if pd is None:
         k = k_or_p_max
-        p_max = None
+        p_max = 1
     else:
         k = 0
         p_max = k_or_p_max
@@ -99,7 +99,7 @@ def run_sim_parall(param, args, k_or_p_max, n_single_sim):
     new_recovery = args['new_recovery']
     if pd is None:
         k = k_or_p_max
-        p_max = None
+        p_max = 1
     else:
         k = 0
         p_max = k_or_p_max
