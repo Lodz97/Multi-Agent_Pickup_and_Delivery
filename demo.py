@@ -29,6 +29,8 @@ if __name__ == '__main__':
     if args.k is None and args.p is None:
         print('You have to set k or p!')
         exit(-1)
+    if args.k is None:
+        args.k = 0
 
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
