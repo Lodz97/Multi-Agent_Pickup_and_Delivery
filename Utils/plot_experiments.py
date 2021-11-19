@@ -8,7 +8,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
 
-    file_name = config['experiments_file']
+    file_name = config['experiments_name']
 
     with open(os.path.join(RoothPath.get_root(), config['experiments_path'], file_name), 'r') as f:
         try:
