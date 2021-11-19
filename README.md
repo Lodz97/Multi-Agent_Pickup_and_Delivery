@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## Run One Simulation
 <p align="justify">
-Before running the simulation, an environment can be chosen. The <i>Environments</i> folder contains different predefined environments. There exists two main types of environments, differentiated by the presence or absence of the sub-string <i>_random</i> in the name. The ''random'' environments just specify the number of tasks and delay per agents, while the others present fixed tasks and delays (to use these environments, a special simulation parameter must be set). To change the simulation environment, open the file <i>config.json</i> and modify the parameter <i>''input_name</i> with the file name of the desired environment.
+Before running the simulation, an environment can be chosen. The <i>Environments</i> folder contains different predefined environments. There exists two main types of environments, differentiated by the presence or absence of the sub-string <i>_random</i> in the name. The ''random'' environments just specify the number of tasks and delay per agents, while the others present fixed tasks and delays (to use these environments, a special simulation parameter must be set). To change the simulation environment, open the file <i>config.json</i> and modify the parameter <i>''input_name''</i> with the file name of the desired environment.
 Then, to start the simulation, the script <i>demo.py</i> can be run. The script accepts various command line arguments:
  <ul>
     <li> <i>-k</i>: an integer (k >= 0) which represents the robustness parameter for k-TP; </li>
