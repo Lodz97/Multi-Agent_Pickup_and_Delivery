@@ -1,4 +1,3 @@
-import argparse
 import RoothPath
 import json
 import numpy as np
@@ -6,17 +5,12 @@ import os
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-file', help='Name of stats file.')
-    args = parser.parse_args()
-
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
 
-    if not args.file:
-        args.file = 'experiments_new2_big_07_10_2021_00_42_53.json'
+    file_name = config['experiments_file']
 
-    with open(os.path.join(RoothPath.get_root(), config['experiments_path'], args.file), 'r') as f:
+    with open(os.path.join(RoothPath.get_root(), config['experiments_path'], file_name), 'r') as f:
         try:
             json_file = json.load(f)
         # If the file is empty the ValueError will be thrown
@@ -48,7 +42,7 @@ if __name__ == '__main__':
             else:
                 plt.boxplot(dic['costs_list'], showmeans=True)
                 plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
-                plt.xlabel('p_max')
+                plt.xlabel('p_threshold')
             plt.ylabel('Costs')
             plt.subplot(1, 3, 2)
             plt.title(name)
@@ -58,7 +52,7 @@ if __name__ == '__main__':
             else:
                 plt.boxplot(dic['replans_list'], showmeans=True)
                 plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
-                plt.xlabel('p_max')
+                plt.xlabel('p_threshold')
             plt.ylabel('Number of replans')
             plt.subplot(1, 3, 3)
             plt.title(name)
@@ -68,7 +62,7 @@ if __name__ == '__main__':
             else:
                 plt.boxplot(dic['sim_times_list'], showmeans=True)
                 plt.xticks(range(1, len(dic['list']) + 1), dic['list'])
-                plt.xlabel('p_max')
+                plt.xlabel('p_threshold')
             plt.ylabel('Computation cost per simulation [s]')
             plt.show()
 
