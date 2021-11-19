@@ -1,5 +1,7 @@
 # Multi-Agent Pickup and Delivery
+<p align="justify">
 This repo contains implementations of various algorithms used to solve the problem of Multi-Agent Pickup and Delivery (a generalization of Multi-Agent Path Finding) and a simulation envirionment used to test them.
+</p>
 
 ## Overview
 <p align="justify">
