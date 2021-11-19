@@ -45,7 +45,7 @@ Note that if the script is run without both k and p, it becomes TP with recovery
 sudo apt-get install python3-tk
 ```
 
-In the following we present some example runs.
+In the following we present some example runs.<br>
 Run TP with recovery routines:
 
 ```
