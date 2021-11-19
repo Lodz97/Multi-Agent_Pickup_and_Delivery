@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-k', help='Robustness parameter for k-TP', default=None, type=int)
     parser.add_argument('-p', help='Robustness parameter for p-TP', default=None, type=float)
-    parser.add_argument('-pd', help='Probability of an agento of being delayed at any time step (p-TP)', default=0.02,
+    parser.add_argument('-pd', help='Probability of an agent of being delayed at any time step (p-TP)', default=0.02,
                         type=float)
     parser.add_argument('-p_iter', help='Number of allowed replans if a path exceeds probability thereshold (p-TP)',
                         default=1, type=int)
