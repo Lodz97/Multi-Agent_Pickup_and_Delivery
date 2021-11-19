@@ -4,9 +4,9 @@ This repo contains implementations of various algorithms used to solve the probl
 </p>
 
 ## Overview
-<p align="justify">
+<div align="justify">
 Multi-Agent Pickup and Delivery (MAPD) is the problem of computing collision-free paths for a group of agents such that they can safely reach delivery locations from pickup ones.  These locations are provided at runtime, making MAPD a combination between classical Multi-Agent Path Finding (MAPF) and online task assignment. Current algorithms for MAPD do not consider many of the practical issues encountered in real applications: real agents often do not follow the planned paths perfectly, and may be subject to delays and failures.  The objectives of this work are to study the problem of MAPD with delays, and to present solution approaches that provide robustness guarantees by planning paths that limit the effects of imperfect execution. In particular, two  algorithms are introduced, k-TP and p-TP, both based on a decentralized algorithm typically used to solve MAPD, Token Passing  (TP), which offer deterministic and probabilistic guarantees,respectively. Experimentally, these algorithms are compared against a version of TP enriched with recovery routines. k-TP and p-TP, planning robustsolutions, are able to significantly reduce the number of replans caused by delays, with little or no increase in solution cost and running time.
-</p>
+
 
 ## Simulation
 In the image we can see an overview of the simulation pipeline. 
@@ -19,16 +19,15 @@ Green rectangles represents the input (a yaml file containing information about 
 
 ## Requirements
 The code has been tested with Python version 3.6.9.
-All the packages needed to run the code can be found in the file *requirements.txt*. To install all the requirements, run the following code:
+All the packages needed to run the code can be found in the file `requirements.txt`. To install all the requirements, run the following command:
 
 ```
 pip install -r requirements.txt
 ```
 
 ## Run One Simulation
-<p align="justify">
-Before running the simulation, an environment can be chosen. The <i>Environments</i> folder contains different predefined environments. There exists two main types of environments, differentiated by the presence or absence of the sub-string <i>_random</i> in the name. The ''random'' environments just specify the number of tasks and delay per agents, while the others present fixed tasks and delays (to use these environments, a special simulation parameter must be set). To change the simulation environment, open the file <i>config.json</i> and modify the parameter <i>''input_name''</i> with the file name of the desired environment.
-Then, to start the simulation, the script <i>demo.py</i> can be run. The script accepts various command line arguments:
+Before running the simulation, an environment can be chosen. The <i>Environments</i> folder contains different predefined environments. There exists two main types of environments, differentiated by the presence or absence of the sub-string <i>_random</i> in the name. The ''random'' environments just specify the number of tasks and delay per agents, while the others present fixed tasks and delays (to use these environments, a special simulation parameter must be set). To change the simulation environment, open the file `config.json` and modify the parameter <i>''input_name''</i> with the file name of the desired environment.
+Then, to start the simulation, the script `demo.py` can be run. The script accepts various command line arguments:
  <ul>
     <li> <i>-k</i>: an integer (k >= 0) which represents the robustness parameter for k-TP; </li>
     <li> <i>-p</i>: a float (0 <= p <= 1) which represents the robustness parameter (probability threshold) for p-TP; </li>
@@ -38,8 +37,8 @@ Then, to start the simulation, the script <i>demo.py</i> can be run. The script 
     <li> <i>-slow_factor</i>: an integer (slow_factor >= 1, default 1) which allows to slow down the visualization; </li>
     <li> <i>-not_rand</i>: this parameter needs to be present if the input environment is not randomized. </li>
 </ul>
-Note that if the script is run without both k and p, it becomes TP with recovery routines. If the visualization does not start after the end of the simulation, the error could be related to the non-GUI back-end of Matplotlib. To resolve this problem, restart the simulation after the following code has been run:
-</p>
+Note that if the script is run without both k and p, it becomes TP with recovery routines. If the visualization does not start after the end of the simulation, the error could be related to the non-GUI back-end of Matplotlib. To resolve this problem, restart the simulation after the following command has been run:
+<p></p> 
     
 ```
 sudo apt-get install python3-tk
@@ -65,20 +64,16 @@ python3 demo.py -p 0.6 -pd 0.05 -not_rand
 ```
 
 ## Run Multiple Experiments
-<p align="justify">
-To run multiple experiments and collect all the statistics, a specific script, <i>run_all_experiments_new.py</i>, can be used. This script contains a list of experiments (easy to modify and extend) that will be run exploiting multi-threading; after all the experiments terminate a json file with the results will be saved in the <i>Experiments</i> folder. The script can be run with the following code:
-</p>
+To run multiple experiments and collect all the statistics, a specific script, `run_all_experiments_new.py`, can be used. This script contains a list of experiments (easy to modify and extend) that will be run exploiting multi-threading; after all the experiments terminate a json file with the results will be saved in the <i>Experiments</i> folder. The script can be run with the following command:
 
 ```
 python3 -m Utils.run_all_experiments_new
 ```
-<p align="justify">
-To see the results plotted as box plots, the script <i>plot_experiments</i> can be used. First, modify the file <i>config.json</i> changing the parameter <i>''experiments_name''</i> with the name of the experiments file that has just been created. Then run the visualization tool with the following code:
-</p>
+To see the results plotted as box plots, the script `plot_experiments.py` can be used. First, modify the file `config.json` changing the parameter <i>''experiments_name''</i> with the name of the experiments file that has just been created. Then run the visualization tool with the following command:
 
 ```
 python3 -m Utils.plot_experiments
 ```
 
 When a plot is closed, the next one will appear until the end of the experiments.
-</p>
+
