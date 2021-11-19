@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', help='Robustness parameter for p-TP', default=None, type=float)
     parser.add_argument('-pd', help='Probability of an agent of being delayed at any time step (p-TP)', default=0.02,
                         type=float)
-    parser.add_argument('-p_iter', help='Number of allowed replans if a path exceeds probability thereshold (p-TP)',
+    parser.add_argument('-p_iter', help='Number of allowed replans if a path exceeds probability threshold (p-TP)',
                         default=1, type=int)
     parser.add_argument('-a_star_max_iter', help='Maximum number of states explored by the low-level algorithm',
                         default=5000, type=int)
