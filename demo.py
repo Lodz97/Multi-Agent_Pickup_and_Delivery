@@ -10,17 +10,18 @@ import subprocess
 import sys
 
 if __name__ == '__main__':
-    random.seed(1234)
+    #random.seed(1234)
     parser = argparse.ArgumentParser()
     parser.add_argument('-k', help='Robustness parameter for k-TP', default=None, type=int)
     parser.add_argument('-p', help='Robustness parameter for p-TP', default=None, type=float)
-    parser.add_argument('-pd', help='Probability of an agent of being delayed at any time step (p-TP)', default=0.02,
-                        type=float)
-    parser.add_argument('-p_iter', help='Number of allowed replans if a path exceeds probability threshold (p-TP)',
+    parser.add_argument('-pd', help='Expected probability of an agent of being delayed at any time step (p-TP)',
+                        default=0.02, type=float)
+    parser.add_argument('-p_iter', help='Number of times a new path can be recalculated if the one calculated '
+                                        'before exceeds the probability threshold (p-TP)',
                         default=1, type=int)
     parser.add_argument('-a_star_max_iter', help='Maximum number of states explored by the low-level algorithm',
                         default=5000, type=int)
-    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=2, type=int)
+    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=1, type=int)
     parser.add_argument('-not_rand', help='Use if input has fixed tasks and delays', action='store_true')
 
     args = parser.parse_args()
