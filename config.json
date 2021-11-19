@@ -1,6 +1,6 @@
 {
     "input_path": "Environments",
-    "input_name": "input_warehouse_mid_random.yaml",
+    "input_name": "input_warehouse_small_random.yaml",
     "visual_postfix": "_tmp",
     "experiments_path": "Experiments",
     "experiments_file": "experiments_new2_big_07_10_2021_00_42_53.json"

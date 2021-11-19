@@ -101,7 +101,7 @@ class Animation:
 
         self.anim = animation.FuncAnimation(self.fig, self.animate_func,
                                             init_func=self.init_func,
-                                            frames=int(self.T + 1) * 10,
+                                            frames=int(self.T + 1) * self.slow_factor,
                                             interval=10,
                                             blit=True,
                                             repeat=False)
@@ -180,7 +180,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-map", help="input file containing map")
     parser.add_argument("-schedule", help="schedule for agents")
-    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=1, type=int)
+    parser.add_argument('-slow_factor', help='Slow factor of visualization', default=5, type=int)
     parser.add_argument('--video', dest='video', default=None,
                         help="output video file (or leave empty to show on screen)")
     parser.add_argument("--speed", type=int, default=1, help="speedup-factor")
