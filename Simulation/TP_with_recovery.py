@@ -63,9 +63,11 @@ class TokenPassingRecovery(object):
     def init_token(self):
         self.token['agents'] = {}
         self.token['tasks'] = {}
+        self.token['start_tasks_times'] = {}
         self.token['completed_tasks_times'] = {}
         for t in self.simulation.get_new_tasks():
             self.token['tasks'][t['task_name']] = [t['start'], t['goal']]
+            self.token['start_tasks_times'][t['task_name']] = self.simulation.get_time()
         self.token['agents_to_tasks'] = {}
         self.token['completed_tasks'] = 0
         self.token['n_replans'] = 0
@@ -364,6 +366,7 @@ class TokenPassingRecovery(object):
         # Collect new tasks and assign them, if possible
         for t in self.simulation.get_new_tasks():
             self.token['tasks'][t['task_name']] = [t['start'], t['goal']]
+            self.token['start_tasks_times'][t['task_name']] = self.simulation.get_time()
         idle_agents = self.get_idle_agents()
         while len(idle_agents) > 0:
             agent_name = random.choice(list(idle_agents.keys()))

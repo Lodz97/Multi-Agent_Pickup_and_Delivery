@@ -14,7 +14,7 @@ if __name__ == '__main__':
     with open(os.path.join(RoothPath.get_root(), 'config.json'), 'r') as json_file:
         config = json.load(json_file)
     env_folder = os.path.join(RoothPath.get_root(), os.path.join(config['input_path']))
-    output = os.path.join(config['experiments_path'], 'experiments_new3_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json')
+    output = os.path.join(config['experiments_path'], 'experiments_new_serv_time_' + datetime.now().strftime('%d_%m_%Y_%H_%M_%S') + '.json')
     with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
         json.dump({}, f)
     random.seed(1234)
@@ -53,9 +53,11 @@ if __name__ == '__main__':
         var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -67,6 +69,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -103,9 +106,11 @@ if __name__ == '__main__':
         var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -117,6 +122,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -153,9 +159,11 @@ if __name__ == '__main__':
         var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -167,6 +175,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -203,9 +212,11 @@ if __name__ == '__main__':
         var_list = [0, 1, 2, 3, 4]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -217,6 +228,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -253,9 +265,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -267,6 +281,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -303,9 +318,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -317,6 +334,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -353,9 +371,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -367,6 +387,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -403,9 +424,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -417,6 +440,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -453,9 +477,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -467,6 +493,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -503,9 +530,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -517,6 +546,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -553,9 +583,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -567,6 +599,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 
@@ -603,9 +636,11 @@ if __name__ == '__main__':
         var_list = [1, 0.5, 0.25, 0.1, 0.05]
         args['list'] = var_list
         costs_list = []
+        service_times_list = []
         replans_list = []
         sim_times_list = []
         args['costs_list'] = costs_list
+        args['service_times_list'] = service_times_list
         args['replans_list'] = replans_list
         args['sim_times_list'] = sim_times_list
         pool = PoolWithSubprocess(processes=multiprocessing.cpu_count(), maxtasksperchild=1)
@@ -617,6 +652,7 @@ if __name__ == '__main__':
             costs_list.append(el[0])
             replans_list.append(el[1])
             sim_times_list.append(el[2])
+            service_times_list.append(el[4])
         with open(os.path.join(RoothPath.get_root(), output), 'w') as f:
             json.dump(json_file, f)
 

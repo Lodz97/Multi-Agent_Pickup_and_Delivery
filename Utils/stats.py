@@ -39,6 +39,7 @@ def run_sim(param, n_sim, args, k_or_p_max):
 
     costs = []
     replans = []
+    service_times = []
     sim_times = []
     algo_times = []
     dimensions = param['map']['dimensions']
@@ -80,16 +81,23 @@ def run_sim(param, n_sim, args, k_or_p_max):
             replans.append(tp.get_n_replans())
             sim_times.append(time.time() - start)
             algo_times.append(simulation.get_algo_time())
+            serv_time = 0
+            for task, end_time in tp.get_token()['completed_tasks_times'].items():
+                serv_time += (end_time - tp.get_token()['start_tasks_times'][task])
+            service_times.append(serv_time)
+
     avg_cost = mean(costs)
+    avg_service_time = mean(service_times)
     avg_n_replans = mean(replans)
     avg_computation_time_per_sim = mean(sim_times)
     avg_algo_time_per_sim = mean(algo_times)
     print('k:', k)
     print('Average cost:', avg_cost)
+    print('Average service time:', avg_service_time)
     print('Average number of replans:', avg_n_replans)
     print('Average computation time per simulation:', avg_computation_time_per_sim)
     print('Average computation time per algorithm execution:', avg_algo_time_per_sim)
-    return [costs, replans, sim_times, algo_times]
+    return [costs, replans, sim_times, algo_times, service_times]
 
 def run_sim_parall(param, args, k_or_p_max, n_single_sim):
     a_star_max_iter = args['a_star_max_iter']
@@ -159,17 +167,18 @@ if __name__ == '__main__':
             print(exc)
 
     # Simulate
-    n_sim = 10
+    n_sim = 20
     args = {}
     args['a_star_max_iter'] = 4000
     args['replan_every_k_delays'] = False
-    args['pd'] = 0.1
+    args['pd'] = None
     args['p_iter'] = 1
     args['new_recovery'] = True
     args['task_freq'] = 1
-    #var_list = [0, 1, 2, 3, 4]
-    var_list = [1, 0.5, 0.25, 0.1, 0.05]
+    var_list = [0, 1, 2, 3, 4]
+    #var_list = [1, 0.5, 0.25, 0.1, 0.05]
     costs_list = []
+    service_times_list = []
     replans_list = []
     sim_times_list = []
     algo_times_list = []
@@ -184,24 +193,28 @@ if __name__ == '__main__':
         replans_list.append(el[1])
         sim_times_list.append(el[2])
         algo_times_list.append(el[3])
+        service_times_list.append(el[4])
     print(time.time() - start)
 
     plot1 = plt.figure(1)
     plt.boxplot(costs_list, positions=var_list, showmeans=True)
     plt.ylabel('Costs')
     plot2 = plt.figure(2)
+    plt.boxplot(service_times_list, positions=var_list, showmeans=True)
+    plt.ylabel('Service times')
+    plot3 = plt.figure(3)
     plt.boxplot(replans_list, positions=var_list, showmeans=True)
     plt.ylabel('Number of replans')
-    plot3 = plt.figure(3)
+    plot4 = plt.figure(4)
     plt.boxplot(sim_times_list, positions=var_list, showmeans=True)
     plt.ylabel('Computation cost per simulation [s]')
-    plot4 = plt.figure(4)
+    plot5 = plt.figure(5)
     plt.boxplot(algo_times_list, positions=var_list, showmeans=True)
     plt.ylabel('Computation cost per algorithm execution [s]')
     plt.show()
 
 
-
+    '''
     costs_list = []
     replans_list = []
     sim_times_list = []
@@ -234,5 +247,5 @@ if __name__ == '__main__':
     plt.boxplot(sim_times_list, positions=var_list)
     plt.ylabel('Computation cost per simulation [s]')
     plt.show()
-
+    '''
 
